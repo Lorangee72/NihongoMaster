@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Космический рейс | Nihongo Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #f1c40f;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #0a0a1a;
+            color: white;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: rgba(44, 62, 80, 0.8);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: white;
+        }
+        
+        .back-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .game-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+        }
+        
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+        
+        .game-content {
+            position: relative;
+            z-index: 2;
+            width: 90%;
+            max-width: 800px;
+            background: rgba(44, 62, 80, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(241, 196, 15, 0.3);
+            text-align: center;
+        }
+        
+        .game-title {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .game-description {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .game-screen {
+            width: 100%;
+            height: 400px;
+            background-color: #000;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .spaceship {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,10 90,90 50,70 10,90" fill="%23f1c40f"/></svg>') no-repeat center center;
+            background-size: contain;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        
+        .asteroid {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%23777"/></svg>') no-repeat center center;
+            background-size: contain;
+            z-index: 5;
+        }
+        
+        .question-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(44, 62, 80, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid var(--accent);
+            width: 80%;
+            max-width: 500px;
+            z-index: 20;
+            display: none;
+        }
+        
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .answer-btn {
+            padding: 10px;
+            background-color: var(--secondary);
+            color: white;
+            border: 1px solid var(--accent);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .answer-btn:hover {
+            background-color: var(--accent);
+            color: var(--dark);
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            margin-right: 5px;
+            color: var(--accent);
+        }
+        
+        .start-btn, .restart-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .start-btn:hover, .restart-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(231, 76, 60, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 30;
+            display: none;
+        }
+        
+        .game-over h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .answers {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="menu.html" class="logo">Nihongo<span>Master</span></a>
+            <a href="gamee.html" class="back-btn">Назад к играм</a>
+        </div>
+    </div>
+    
+    <div class="game-container">
+        <div class="game-content">
+            <h1 class="game-title">Космический рейс</h1>
+            <p class="game-description">
+                Управляйте космическим кораблем, правильно отвечая на вопросы по хирагане и катакане. 
+                Каждый правильный ответ - шаг ближе к спасению планеты! 
+                Избегайте астероидов и проверьте свои знания японской письменности.
+            </p>
+            
+            <div class="game-stats">
+                <div class="stat">
+                    <span class="stat-icon">🚀</span>
+                    <span id="level">Уровень: 1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-icon">⭐</span>
+                    <span id="score">Очки: 0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-icon">💥</span>
+                    <span id="lives">Жизни: 3</span>
+                </div>
+            </div>
+            
+            <div class="game-screen">
+                <div class="spaceship" id="spaceship"></div>
+                <div class="question-box" id="questionBox">
+                    <div class="question-text" id="questionText"></div>
+                    <div class="answers" id="answers"></div>
+                </div>
+                <div class="game-over" id="gameOver">
+                    <h2>Игра окончена!</h2>
+                    <div class="score-display">Ваш счет: <span id="finalScore">0</span></div>
+                    <button class="restart-btn" id="restartBtn">Играть снова</button>
+                </div>
+            </div>
+            
+            <button class="start-btn" id="startBtn">Начать игру</button>
+        </div>
+    </div>
+    
+    <script>
+        // Игровые переменные
+        let gameActive = false;
+        let score = 0;
+        let level = 1;
+        let lives = 3;
+        let asteroids = [];
+        let questionActive = false;
+        let correctAnswer;
+        let asteroidInterval;
+        let gameSpeed = 1500;
+        
+        // Элементы DOM
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const gameScreen = document.querySelector('.game-screen');
+        const spaceship = document.getElementById('spaceship');
+        const questionBox = document.getElementById('questionBox');
+        const questionText = document.getElementById('questionText');
+        const answersContainer = document.getElementById('answers');
+        const gameOverScreen = document.getElementById('gameOver');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+        const livesDisplay = document.getElementById('lives');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        
+        // Вопросы только по хирагане и катакане
+        const questions = [
+            // Хирагана
+            {
+                question: "Как читается этот символ: あ?",
+                answers: ["a", "i", "u", "e"],
+                correct: 0
+            },
+            {
+                question: "Как читается этот символ: い?",
+                answers: ["a", "i", "u", "o"],
+                correct: 1
+            },
+            {
+                question: "Какой символ соответствует звуку 'ka'?",
+                answers: ["か", "き", "く", "け"],
+                correct: 0
+            },
+            {
+                question: "Какой символ соответствует звуку 'shi'?",
+                answers: ["さ", "し", "す", "せ"],
+                correct: 1
+            },
+            {
+                question: "Как читается этот символ: つ?",
+                answers: ["ta", "chi", "tsu", "te"],
+                correct: 2
+            },
+            {
+                question: "Какой символ соответствует звуку 'ne'?",
+                answers: ["な", "に", "ぬ", "ね"],
+                correct: 3
+            },
+            {
+                question: "Как читается этот символ: ほ?",
+                answers: ["ha", "hi", "fu", "ho"],
+                correct: 3
+            },
+            {
+                question: "Какой символ соответствует звуку 'yo'?",
+                answers: ["や", "ゆ", "よ", "わ"],
+                correct: 2
+            },
+            {
+                question: "Как читается этот символ: り?",
+                answers: ["ra", "ri", "ru", "re"],
+                correct: 1
+            },
+            {
+                question: "Какой символ соответствует звуку 'wa'?",
+                answers: ["わ", "を", "ん", "ゐ"],
+                correct: 0
+            },
+            
+            // Катакана
+            {
+                question: "Как читается этот символ: ア?",
+                answers: ["a", "i", "u", "e"],
+                correct: 0
+            },
+            {
+                question: "Как читается этот символ: イ?",
+                answers: ["a", "i", "u", "o"],
+                correct: 1
+            },
+            {
+                question: "Какой символ соответствует звуку 'ka' в катакане?",
+                answers: ["カ", "キ", "ク", "ケ"],
+                correct: 0
+            },
+            {
+                question: "Какой символ соответствует звуку 'shi' в катакане?",
+                answers: ["サ", "シ", "ス", "セ"],
+                correct: 1
+            },
+            {
+                question: "Как читается этот символ: ツ?",
+                answers: ["ta", "chi", "tsu", "te"],
+                correct: 2
+            },
+            {
+                question: "Какой символ соответствует звуку 'ne' в катакане?",
+                answers: ["ナ", "ニ", "ヌ", "ネ"],
+                correct: 3
+            },
+            {
+                question: "Как читается этот символ: ホ?",
+                answers: ["ha", "hi", "fu", "ho"],
+                correct: 3
+            },
+            {
+                question: "Какой символ соответствует звуку 'yo' в катакане?",
+                answers: ["ヤ", "ユ", "ヨ", "ワ"],
+                correct: 2
+            },
+            {
+                question: "Как читается этот символ: リ?",
+                answers: ["ra", "ri", "ru", "re"],
+                correct: 1
+            },
+            {
+                question: "Какой символ соответствует звуку 'wa' в катакане?",
+                answers: ["ワ", "ヲ", "ン", "ヰ"],
+                correct: 0
+            },
+            {
+                question: "Как читается этот символ: ン?",
+                answers: ["na", "ni", "nu", "n"],
+                correct: 3
+            },
+            {
+                question: "Какой символ соответствует звуку 'gya' в катакане?",
+                answers: ["ギャ", "ギュ", "ギョ", "ガ"],
+                correct: 0
+            },
+            {
+                question: "Как читается этот символ: ピョ?",
+                answers: ["pya", "pyu", "pyo", "po"],
+                correct: 2
+            }
+        ];
+        
+        // Начало игры
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+        
+        function startGame() {
+            gameActive = true;
+            score = 0;
+            level = 1;
+            lives = 3;
+            gameSpeed = 1500;
+            asteroids = [];
+            
+            updateStats();
+            startBtn.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            
+            // Очистка экрана от старых астероидов
+            document.querySelectorAll('.asteroid').forEach(asteroid => asteroid.remove());
+            
+            // Запуск генерации астероидов
+            asteroidInterval = setInterval(createAsteroid, gameSpeed);
+            
+            // Запуск движения астероидов
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Игровой цикл
+        function gameLoop() {
+            if (!gameActive) return;
+            
+            moveAsteroids();
+            checkCollisions();
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Создание астероида
+        function createAsteroid() {
+            if (questionActive) return;
+            
+            const asteroid = document.createElement('div');
+            asteroid.className = 'asteroid';
+            gameScreen.appendChild(asteroid);
+            
+            const xPos = Math.random() * (gameScreen.offsetWidth - 40);
+            asteroid.style.left = `${xPos}px`;
+            asteroid.style.top = '-40px';
+            
+            asteroids.push({
+                element: asteroid,
+                x: xPos,
+                y: -40,
+                speed: 2 + level * 0.5
+            });
+            
+            // Каждые 5 очков увеличиваем сложность
+            if (score > 0 && score % 5 === 0) {
+                levelUp();
+            }
+            
+            // Случайно показываем вопрос
+            if (Math.random() < 0.3) {
+                showQuestion();
+            }
+        }
+        
+        // Движение астероидов
+        function moveAsteroids() {
+            asteroids.forEach((asteroid, index) => {
+                asteroid.y += asteroid.speed;
+                asteroid.element.style.top = `${asteroid.y}px`;
+                
+                // Удаление астероидов, вышедших за пределы экрана
+                if (asteroid.y > gameScreen.offsetHeight) {
+                    asteroid.element.remove();
+                    asteroids.splice(index, 1);
+                }
+            });
+        }
+        
+        // Проверка столкновений
+        function checkCollisions() {
+            if (questionActive) return;
+            
+            const shipRect = spaceship.getBoundingClientRect();
+            
+            asteroids.forEach((asteroid, index) => {
+                const asteroidRect = asteroid.element.getBoundingClientRect();
+                
+                if (
+                    shipRect.left < asteroidRect.right &&
+                    shipRect.right > asteroidRect.left &&
+                    shipRect.top < asteroidRect.bottom &&
+                    shipRect.bottom > asteroidRect.top
+                ) {
+                    // Столкновение
+                    asteroid.element.remove();
+                    asteroids.splice(index, 1);
+                    
+                    lives--;
+                    updateStats();
+                    
+                    if (lives <= 0) {
+                        endGame();
+                    }
+                }
+            });
+        }
+        
+        // Показ вопроса
+        function showQuestion() {
+            questionActive = true;
+            clearInterval(asteroidInterval);
+            
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            questionText.textContent = randomQuestion.question;
+            answersContainer.innerHTML = '';
+            
+            randomQuestion.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-btn';
+                button.textContent = answer;
+                button.addEventListener('click', () => checkAnswer(index === randomQuestion.correct));
+                answersContainer.appendChild(button);
+            });
+            
+            correctAnswer = randomQuestion.correct;
+            questionBox.style.display = 'block';
+        }
+        
+        // Проверка ответа
+        function checkAnswer(isCorrect) {
+            questionActive = false;
+            questionBox.style.display = 'none';
+            
+            if (isCorrect) {
+                score++;
+                updateStats();
+                
+                // Уничтожение всех астероидов при правильном ответе
+                asteroids.forEach(asteroid => asteroid.element.remove());
+                asteroids = [];
+            } else {
+                lives--;
+                updateStats();
+                
+                if (lives <= 0) {
+                    endGame();
+                    return;
+                }
+            }
+            
+            // Возобновление игры
+            asteroidInterval = setInterval(createAsteroid, gameSpeed);
+        }
+        
+        // Повышение уровня
+        function levelUp() {
+            level++;
+            gameSpeed = Math.max(500, 1500 - level * 100);
+            updateStats();
+        }
+        
+        // Конец игры
+        function endGame() {
+            gameActive = false;
+            clearInterval(asteroidInterval);
+            finalScoreDisplay.textContent = score;
+            gameOverScreen.style.display = 'block';
+        }
+        
+        // Обновление статистики
+        function updateStats() {
+            scoreDisplay.textContent = `Очки: ${score}`;
+            levelDisplay.textContent = `Уровень: ${level}`;
+            livesDisplay.textContent = `Жизни: ${lives}`;
+        }
+        
+        // Управление кораблем
+        document.addEventListener('keydown', (e) => {
+            if (!gameActive || questionActive) return;
+            
+            const shipRect = spaceship.getBoundingClientRect();
+            const gameRect = gameScreen.getBoundingClientRect();
+            const moveAmount = 20;
+            
+            if (e.key === 'ArrowLeft' && shipRect.left > gameRect.left + moveAmount) {
+                spaceship.style.left = `${parseInt(spaceship.style.left || '0') - moveAmount}px`;
+            }
+            
+            if (e.key === 'ArrowRight' && shipRect.right < gameRect.right - moveAmount) {
+                spaceship.style.left = `${parseInt(spaceship.style.left || '0') + moveAmount}px`;
+            }
+        });
+    </script>
+</body>
+</html>

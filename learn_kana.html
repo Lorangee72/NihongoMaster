@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изучение каны | Nihongo Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #f1c40f;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: white;
+        }
+        
+        .back-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .kana-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .kana-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--secondary);
+        }
+        
+        .kana-title {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+        
+        .kana-switcher {
+            display: flex;
+            background-color: var(--light);
+            border-radius: 30px;
+            overflow: hidden;
+        }
+        
+        .kana-switch {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .kana-switch.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .kana-content {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .kana-selection {
+            width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .selection-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .selection-mode {
+            margin-bottom: 25px;
+        }
+        
+        .mode-title {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .mode-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .mode-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .mode-option:hover {
+            background-color: var(--light);
+        }
+        
+        .mode-option.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .mode-option input {
+            margin-right: 10px;
+        }
+        
+        .kana-rows {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .kana-row {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: var(--light);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .kana-row:hover {
+            background-color: #d6dbdf;
+        }
+        
+        .kana-row.active {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .kana-practice {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .practice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .practice-title {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .practice-stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .practice-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .kana-character {
+            font-size: 8rem;
+            font-weight: 500;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .practice-answer {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .answer-option {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .answer-option:hover {
+            background-color: var(--light);
+        }
+        
+        .practice-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .control-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .primary-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .primary-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .secondary-btn {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .secondary-btn:hover {
+            background-color: #d6dbdf;
+        }
+        
+        .result-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+            display: block;
+        }
+        
+        .error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--error);
+            display: block;
+        }
+        
+        .correct-answer {
+            font-weight: 700;
+            margin-top: 5px;
+        }
+        
+        .drawing-container {
+            width: 100%;
+            max-width: 500px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            height: 200px;
+            position: relative;
+        }
+        
+        #drawing-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            background-color: white;
+            touch-action: none;
+        }
+        
+        .drawing-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .drawing-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        /* Стили для таблицы произношения */
+        .pronunciation-table {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .pronunciation-table.show {
+            transform: translateX(0);
+        }
+        
+        .pronunciation-table h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .pronunciation-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .pronunciation-table th, 
+        .pronunciation-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .pronunciation-table th {
+            background-color: var(--light);
+        }
+        
+        .toggle-table-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .overlay.show {
+            display: block;
+        }
+        
+        .reading-display {
+            font-size: 8rem;
+            font-weight: 500;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+        }
+        
+        @media (max-width: 900px) {
+            .kana-content {
+                flex-direction: column;
+            }
+            
+            .kana-selection {
+                width: 100%;
+            }
+            
+            .kana-rows {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .pronunciation-table {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .kana-rows {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .answer-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .kana-character,
+            .reading-display {
+                font-size: 6rem;
+                min-height: 150px;
+            }
+            
+            .pronunciation-table {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="menu.html" class="logo">Nihongo<span>Master</span></a>
+            <a href="menu.html" class="back-btn">На главную</a>
+        </div>
+    </div>
+    
+    <button class="toggle-table-btn" id="toggle-table-btn">あ</button>
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="pronunciation-table" id="pronunciation-table">
+        <h3>Таблица произношения</h3>
+        <div id="hiragana-table">
+            <h4>Хирагана</h4>
+            <table>
+                <tr><th>あ a</th><th>い i</th><th>う u</th><th>え e</th><th>お o</th></tr>
+                <tr><th>か ka</th><th>き ki</th><th>く ku</th><th>け ke</th><th>こ ko</th></tr>
+                <tr><th>さ sa</th><th>し shi</th><th>す su</th><th>せ se</th><th>そ so</th></tr>
+                <tr><th>た ta</th><th>ち chi</th><th>つ tsu</th><th>て te</th><th>と to</th></tr>
+                <tr><th>な na</th><th>に ni</th><th>ぬ nu</th><th>ね ne</th><th>の no</th></tr>
+                <tr><th>は ha</th><th>ひ hi</th><th>ふ fu</th><th>へ he</th><th>ほ ho</th></tr>
+                <tr><th>ま ma</th><th>み mi</th><th>む mu</th><th>め me</th><th>も mo</th></tr>
+                <tr><th>や ya</th><th></th><th>ゆ yu</th><th></th><th>よ yo</th></tr>
+                <tr><th>ら ra</th><th>り ri</th><th>る ru</th><th>れ re</th><th>ろ ro</th></tr>
+                <tr><th>わ wa</th><th></th><th>を wo</th><th></th><th>ん n</th></tr>
+                <tr><th>が ga</th><th>ぎ gi</th><th>ぐ gu</th><th>げ ge</th><th>ご go</th></tr>
+                <tr><th>ざ za</th><th>じ ji</th><th>ず zu</th><th>ぜ ze</th><th>ぞ zo</th></tr>
+                <tr><th>だ da</th><th>ぢ ji</th><th>づ zu</th><th>で de</th><th>ど do</th></tr>
+                <tr><th>ば ba</th><th>び bi</th><th>ぶ bu</th><th>べ be</th><th>ぼ bo</th></tr>
+                <tr><th>ぱ pa</th><th>ぴ pi</th><th>ぷ pu</th><th>ぺ pe</th><th>ぽ po</th></tr>
+                <tr><th>きゃ kya</th><th>きゅ kyu</th><th>きょ kyo</th></tr>
+                <tr><th>しゃ sha</th><th>しゅ shu</th><th>しょ sho</th></tr>
+                <tr><th>ちゃ cha</th><th>ちゅ chu</th><th>ちょ cho</th></tr>
+                <tr><th>にゃ nya</th><th>にゅ nyu</th><th>にょ nyo</th></tr>
+                <tr><th>ひゃ hya</th><th>ひゅ hyu</th><th>ひょ hyo</th></tr>
+                <tr><th>みゃ mya</th><th>みゅ myu</th><th>みょ myo</th></tr>
+                <tr><th>りゃ rya</th><th>りゅ ryu</th><th>りょ ryo</th></tr>
+                <tr><th>ぎゃ gya</th><th>ぎゅ gyu</th><th>ぎょ gyo</th></tr>
+                <tr><th>じゃ ja</th><th>じゅ ju</th><th>じょ jo</th></tr>
+                <tr><th>びゃ bya</th><th>びゅ byu</th><th>びょ byo</th></tr>
+                <tr><th>ぴゃ pya</th><th>ぴゅ pyu</th><th>ぴょ pyo</th></tr>
+            </table>
+        </div>
+        <div id="katakana-table" style="display: none;">
+            <h4>Катакана</h4>
+            <table>
+                <tr><th>ア a</th><th>イ i</th><th>ウ u</th><th>エ e</th><th>オ o</th></tr>
+                <tr><th>カ ka</th><th>キ ki</th><th>ク ku</th><th>ケ ke</th><th>コ ko</th></tr>
+                <tr><th>サ sa</th><th>シ shi</th><th>ス su</th><th>セ se</th><th>ソ so</th></tr>
+                <tr><th>タ ta</th><th>チ chi</th><th>ツ tsu</th><th>テ te</th><th>ト to</th></tr>
+                <tr><th>ナ na</th><th>ニ ni</th><th>ヌ nu</th><th>ネ ne</th><th>ノ no</th></tr>
+                <tr><th>ハ ha</th><th>ヒ hi</th><th>フ fu</th><th>ヘ he</th><th>ホ ho</th></tr>
+                <tr><th>マ ma</th><th>ミ mi</th><th>ム mu</th><th>メ me</th><th>モ mo</th></tr>
+                <tr><th>ヤ ya</th><th></th><th>ユ yu</th><th></th><th>ヨ yo</th></tr>
+                <tr><th>ラ ra</th><th>リ ri</th><th>ル ru</th><th>レ re</th><th>ロ ro</th></tr>
+                <tr><th>ワ wa</th><th></th><th>ヲ wo</th><th></th><th>ン n</th></tr>
+                <tr><th>ガ ga</th><th>ギ gi</th><th>グ gu</th><th>ゲ ge</th><th>ゴ go</th></tr>
+                <tr><th>ザ za</th><th>ジ ji</th><th>ズ zu</th><th>ゼ ze</th><th>ゾ zo</th></tr>
+                <tr><th>ダ da</th><th>ヂ ji</th><th>ヅ zu</th><th>デ de</th><th>ド do</th></tr>
+                <tr><th>バ ba</th><th>ビ bi</th><th>ブ bu</th><th>ベ be</th><th>ボ bo</th></tr>
+                <tr><th>パ pa</th><th>ピ pi</th><th>プ pu</th><th>ペ pe</th><th>ポ po</th></tr>
+                <tr><th>キャ kya</th><th>キュ kyu</th><th>キョ kyo</th></tr>
+                <tr><th>シャ sha</th><th>シュ shu</th><th>ショ sho</th></tr>
+                <tr><th>チャ cha</th><th>チュ chu</th><th>チョ cho</th></tr>
+                <tr><th>ニャ nya</th><th>ニュ nyu</th><th>ニョ nyo</th></tr>
+                <tr><th>ヒャ hya</th><th>ヒュ hyu</th><th>ヒョ hyo</th></tr>
+                <tr><th>ミャ mya</th><th>ミュ myu</th><th>ミョ myo</th></tr>
+                <tr><th>リャ rya</th><th>リュ ryu</th><th>リョ ryo</th></tr>
+                <tr><th>ギャ gya</th><th>ギュ gyu</th><th>ギョ gyo</th></tr>
+                <tr><th>ジャ ja</th><th>ジュ ju</th><th>ジョ jo</th></tr>
+                <tr><th>ビャ bya</th><th>ビュ byu</th><th>ビョ byo</th></tr>
+                <tr><th>ピャ pya</th><th>ピュ pyu</th><th>ピョ pyo</th></tr>
+            </table>
+        </div>
+    </div>
+    
+    <div class="kana-container">
+        <div class="kana-header">
+            <h1 class="kana-title">Изучение каны</h1>
+            <div class="kana-switcher">
+                <div class="kana-switch active" id="hiragana-switch">Хирагана</div>
+                <div class="kana-switch" id="katakana-switch">Катакана</div>
+            </div>
+        </div>
+        
+        <div class="kana-content">
+            <div class="kana-selection">
+                <h2 class="selection-title">Режим изучения</h2>
+                <div class="selection-mode">
+                    <h3 class="mode-title">Тип тренировки</h3>
+                    <div class="mode-options">
+                        <label class="mode-option active" data-mode="input">
+                            <input type="radio" name="practice-mode" checked> Ввод чтения
+                        </label>
+                        <label class="mode-option" data-mode="choice">
+                            <input type="radio" name="practice-mode"> Выбор из вариантов
+                        </label>
+                        <label class="mode-option" data-mode="reverse">
+                            <input type="radio" name="practice-mode"> Обратный режим
+                        </label>
+                        <label class="mode-option" data-mode="writing">
+                            <input type="radio" name="practice-mode"> Написание
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="selection-mode">
+                    <h3 class="mode-title">Выбор символов</h3>
+                    <div class="mode-options">
+                        <label class="mode-option active" data-selection="line">
+                            <input type="radio" name="symbol-selection" checked> Построчное изучение
+                        </label>
+                        <label class="mode-option" data-selection="random">
+                            <input type="radio" name="symbol-selection"> Случайный символ
+                        </label>
+                    </div>
+                </div>
+                
+                <h2 class="selection-title">Выберите строку</h2>
+                <div class="kana-rows" id="hiragana-rows">
+                    <!-- Хирагана строки -->
+                    <div class="kana-row active" data-row="a">あ い う え お</div>
+                    <div class="kana-row" data-row="ka">か き く け こ</div>
+                    <div class="kana-row" data-row="sa">さ し す せ そ</div>
+                    <div class="kana-row" data-row="ta">た ち つ て と</div>
+                    <div class="kana-row" data-row="na">な に ぬ ね の</div>
+                    <div class="kana-row" data-row="ha">は ひ ふ へ ほ</div>
+                    <div class="kana-row" data-row="ma">ま み む め も</div>
+                    <div class="kana-row" data-row="ya">や ゆ よ</div>
+                    <div class="kana-row" data-row="ra">ら り る れ ろ</div>
+                    <div class="kana-row" data-row="wa">わ を ん</div>
+                    <div class="kana-row" data-row="ga">が ぎ ぐ げ ご</div>
+                    <div class="kana-row" data-row="za">ざ じ ず ぜ ぞ</div>
+                    <div class="kana-row" data-row="da">だ ぢ づ で ど</div>
+                    <div class="kana-row" data-row="ba">ば び ぶ べ ぼ</div>
+                    <div class="kana-row" data-row="pa">ぱ ぴ ぷ ぺ ぽ</div>
+                    <div class="kana-row" data-row="kya">きゃ きゅ きょ</div>
+                    <div class="kana-row" data-row="sha">しゃ しゅ しょ</div>
+                    <div class="kana-row" data-row="cha">ちゃ ちゅ ちょ</div>
+                    <div class="kana-row" data-row="nya">にゃ にゅ にょ</div>
+                    <div class="kana-row" data-row="hya">ひゃ ひゅ ひょ</div>
+                    <div class="kana-row" data-row="mya">みゃ みゅ みょ</div>
+                    <div class="kana-row" data-row="rya">りゃ りゅ りょ</div>
+                    <div class="kana-row" data-row="gya">ぎゃ ぎゅ ぎょ</div>
+                    <div class="kana-row" data-row="ja">じゃ じゅ じょ</div>
+                    <div class="kana-row" data-row="bya">びゃ びゅ びょ</div>
+                    <div class="kana-row" data-row="pya">ぴゃ ぴゅ ぴょ</div>
+                </div>
+                
+                <div class="kana-rows" id="katakana-rows" style="display: none;">
+                    <!-- Катакана строки -->
+                    <div class="kana-row" data-row="a">ア イ ウ エ オ</div>
+                    <div class="kana-row" data-row="ka">カ キ ク ケ コ</div>
+                    <div class="kana-row" data-row="sa">サ シ ス セ ソ</div>
+                    <div class="kana-row" data-row="ta">タ チ ツ テ ト</div>
+                    <div class="kana-row" data-row="na">ナ ニ ヌ ネ ノ</div>
+                    <div class="kana-row" data-row="ha">ハ ヒ フ ヘ ホ</div>
+                    <div class="kana-row" data-row="ma">マ ミ ム メ モ</div>
+                    <div class="kana-row" data-row="ya">ヤ ユ ヨ</div>
+                    <div class="kana-row" data-row="ra">ラ リ ル レ ロ</div>
+                    <div class="kana-row" data-row="wa">ワ ヲ ン</div>
+                    <div class="kana-row" data-row="ga">ガ ギ グ ゲ ゴ</div>
+                    <div class="kana-row" data-row="za">ザ ジ ズ ゼ ゾ</div>
+                    <div class="kana-row" data-row="da">ダ ヂ ヅ デ ド</div>
+                    <div class="kana-row" data-row="ba">バ ビ ブ ベ ボ</div>
+                    <div class="kana-row" data-row="pa">パ ピ プ ペ ポ</div>
+                    <div class="kana-row" data-row="kya">キャ キュ キョ</div>
+                    <div class="kana-row" data-row="sha">シャ シュ ショ</div>
+                    <div class="kana-row" data-row="cha">チャ チュ チョ</div>
+                    <div class="kana-row" data-row="nya">ニャ ニュ ニョ</div>
+                    <div class="kana-row" data-row="hya">ヒャ ヒュ ヒョ</div>
+                    <div class="kana-row" data-row="mya">ミャ ミュ ミョ</div>
+                    <div class="kana-row" data-row="rya">リャ リュ リョ</div>
+                    <div class="kana-row" data-row="gya">ギャ ギュ ギョ</div>
+                    <div class="kana-row" data-row="ja">ジャ ジュ ジョ</div>
+                    <div class="kana-row" data-row="bya">ビャ ビュ ビョ</div>
+                    <div class="kana-row" data-row="pya">ピャ ピュ ピョ</div>
+                </div>
+            </div>
+            
+            <div class="kana-practice">
+                <div class="practice-header">
+                    <h2 class="practice-title">Тренировка</h2>
+                    <div class="practice-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="correct-count">0</div>
+                            <div class="stat-label">Правильно</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="wrong-count">0</div>
+                            <div class="stat-label">Ошибки</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="streak-count">0</div>
+                            <div class="stat-label">Серия</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="practice-area">
+                    <div class="kana-character" id="kana-character">あ</div>
+                    <div class="reading-display" id="reading-display" style="display: none;"></div>
+                    
+                    <div class="practice-answer" id="input-mode">
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Введите чтение (ромадзи)">
+                    </div>
+                    
+                    <div class="practice-answer" id="choice-mode" style="display: none;">
+                        <div class="answer-options" id="answer-choices">
+                            <div class="answer-option" data-choice="a">a</div>
+                            <div class="answer-option" data-choice="i">i</div>
+                            <div class="answer-option" data-choice="u">u</div>
+                            <div class="answer-option" data-choice="e">e</div>
+                        </div>
+                    </div>
+                    
+                    <div class="practice-answer" id="reverse-mode" style="display: none;">
+                        <div class="answer-options" id="character-choices">
+                            <div class="answer-option" data-char="あ">あ</div>
+                            <div class="answer-option" data-char="い">い</div>
+                            <div class="answer-option" data-char="う">う</div>
+                            <div class="answer-option" data-char="え">え</div>
+                        </div>
+                    </div>
+                    
+                    <div class="practice-answer" id="writing-mode" style="display: none;">
+                        <div class="drawing-container">
+                            <canvas id="drawing-canvas"></canvas>
+                        </div>
+                        <div class="drawing-controls">
+                            <button class="drawing-btn" id="clear-drawing">Очистить</button>
+                            <button class="drawing-btn" id="check-drawing">Проверить</button>
+                        </div>
+                    </div>
+                    
+                    <div class="result-message" id="result-message">
+                        <div id="message-text"></div>
+                        <div class="correct-answer" id="correct-answer"></div>
+                    </div>
+                </div>
+                
+                <div class="practice-controls">
+                    <button class="control-btn secondary-btn" id="skip-btn">Пропустить</button>
+                    <button class="control-btn primary-btn" id="check-btn">Проверить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные каны
+        const kanaData = {
+            hiragana: {
+                a: [{ char: 'あ', reading: 'a' }, { char: 'い', reading: 'i' }, { char: 'う', reading: 'u' }, { char: 'え', reading: 'e' }, { char: 'お', reading: 'o' }],
+                ka: [{ char: 'か', reading: 'ka' }, { char: 'き', reading: 'ki' }, { char: 'く', reading: 'ku' }, { char: 'け', reading: 'ke' }, { char: 'こ', reading: 'ko' }],
+                sa: [{ char: 'さ', reading: 'sa' }, { char: 'し', reading: 'shi' }, { char: 'す', reading: 'su' }, { char: 'せ', reading: 'se' }, { char: 'そ', reading: 'so' }],
+                ta: [{ char: 'た', reading: 'ta' }, { char: 'ち', reading: 'chi' }, { char: 'つ', reading: 'tsu' }, { char: 'て', reading: 'te' }, { char: 'と', reading: 'to' }],
+                na: [{ char: 'な', reading: 'na' }, { char: 'に', reading: 'ni' }, { char: 'ぬ', reading: 'nu' }, { char: 'ね', reading: 'ne' }, { char: 'の', reading: 'no' }],
+                ha: [{ char: 'は', reading: 'ha' }, { char: 'ひ', reading: 'hi' }, { char: 'ふ', reading: 'fu' }, { char: 'へ', reading: 'he' }, { char: 'ほ', reading: 'ho' }],
+                ma: [{ char: 'ま', reading: 'ma' }, { char: 'み', reading: 'mi' }, { char: 'む', reading: 'mu' }, { char: 'め', reading: 'me' }, { char: 'も', reading: 'mo' }],
+                ya: [{ char: 'や', reading: 'ya' }, { char: 'ゆ', reading: 'yu' }, { char: 'よ', reading: 'yo' }],
+                ra: [{ char: 'ら', reading: 'ra' }, { char: 'り', reading: 'ri' }, { char: 'る', reading: 'ru' }, { char: 'れ', reading: 're' }, { char: 'ろ', reading: 'ro' }],
+                wa: [{ char: 'わ', reading: 'wa' }, { char: 'を', reading: 'wo' }, { char: 'ん', reading: 'n' }],
+                ga: [{ char: 'が', reading: 'ga' }, { char: 'ぎ', reading: 'gi' }, { char: 'ぐ', reading: 'gu' }, { char: 'げ', reading: 'ge' }, { char: 'ご', reading: 'go' }],
+                za: [{ char: 'ざ', reading: 'za' }, { char: 'じ', reading: 'ji' }, { char: 'ず', reading: 'zu' }, { char: 'ぜ', reading: 'ze' }, { char: 'ぞ', reading: 'zo' }],
+                da: [{ char: 'だ', reading: 'da' }, { char: 'ぢ', reading: 'ji' }, { char: 'づ', reading: 'zu' }, { char: 'で', reading: 'de' }, { char: 'ど', reading: 'do' }],
+                ba: [{ char: 'ば', reading: 'ba' }, { char: 'び', reading: 'bi' }, { char: 'ぶ', reading: 'bu' }, { char: 'べ', reading: 'be' }, { char: 'ぼ', reading: 'bo' }],
+                pa: [{ char: 'ぱ', reading: 'pa' }, { char: 'ぴ', reading: 'pi' }, { char: 'ぷ', reading: 'pu' }, { char: 'ぺ', reading: 'pe' }, { char: 'ぽ', reading: 'po' }],
+                kya: [{ char: 'きゃ', reading: 'kya' }, { char: 'きゅ', reading: 'kyu' }, { char: 'きょ', reading: 'kyo' }],
+                sha: [{ char: 'しゃ', reading: 'sha' }, { char: 'しゅ', reading: 'shu' }, { char: 'しょ', reading: 'sho' }],
+                cha: [{ char: 'ちゃ', reading: 'cha' }, { char: 'ちゅ', reading: 'chu' }, { char: 'ちょ', reading: 'cho' }],
+                nya: [{ char: 'にゃ', reading: 'nya' }, { char: 'にゅ', reading: 'nyu' }, { char: 'にょ', reading: 'nyo' }],
+                hya: [{ char: 'ひゃ', reading: 'hya' }, { char: 'ひゅ', reading: 'hyu' }, { char: 'ひょ', reading: 'hyo' }],
+                mya: [{ char: 'みゃ', reading: 'mya' }, { char: 'みゅ', reading: 'myu' }, { char: 'みょ', reading: 'myo' }],
+                rya: [{ char: 'りゃ', reading: 'rya' }, { char: 'りゅ', reading: 'ryu' }, { char: 'りょ', reading: 'ryo' }],
+                gya: [{ char: 'ぎゃ', reading: 'gya' }, { char: 'ぎゅ', reading: 'gyu' }, { char: 'ぎょ', reading: 'gyo' }],
+                ja: [{ char: 'じゃ', reading: 'ja' }, { char: 'じゅ', reading: 'ju' }, { char: 'じょ', reading: 'jo' }],
+                bya: [{ char: 'びゃ', reading: 'bya' }, { char: 'びゅ', reading: 'byu' }, { char: 'びょ', reading: 'byo' }],
+                pya: [{ char: 'ぴゃ', reading: 'pya' }, { char: 'ぴゅ', reading: 'pyu' }, { char: 'ぴょ', reading: 'pyo' }]
+            },
+            katakana: {
+                a: [{ char: 'ア', reading: 'a' }, { char: 'イ', reading: 'i' }, { char: 'ウ', reading: 'u' }, { char: 'エ', reading: 'e' }, { char: 'オ', reading: 'o' }],
+                ka: [{ char: 'カ', reading: 'ka' }, { char: 'キ', reading: 'ki' }, { char: 'ク', reading: 'ku' }, { char: 'ケ', reading: 'ke' }, { char: 'コ', reading: 'ko' }],
+                sa: [{ char: 'サ', reading: 'sa' }, { char: 'シ', reading: 'shi' }, { char: 'ス', reading: 'su' }, { char: 'セ', reading: 'se' }, { char: 'ソ', reading: 'so' }],
+                ta: [{ char: 'タ', reading: 'ta' }, { char: 'チ', reading: 'chi' }, { char: 'ツ', reading: 'tsu' }, { char: 'テ', reading: 'te' }, { char: 'ト', reading: 'to' }],
+                na: [{ char: 'ナ', reading: 'na' }, { char: 'ニ', reading: 'ni' }, { char: 'ヌ', reading: 'nu' }, { char: 'ネ', reading: 'ne' }, { char: 'ノ', reading: 'no' }],
+                ha: [{ char: 'ハ', reading: 'ha' }, { char: 'ヒ', reading: 'hi' }, { char: 'フ', reading: 'fu' }, { char: 'ヘ', reading: 'he' }, { char: 'ホ', reading: 'ho' }],
+                ma: [{ char: 'マ', reading: 'ma' }, { char: 'ミ', reading: 'mi' }, { char: 'ム', reading: 'mu' }, { char: 'メ', reading: 'me' }, { char: 'モ', reading: 'mo' }],
+                ya: [{ char: 'ヤ', reading: 'ya' }, { char: 'ユ', reading: 'yu' }, { char: 'ヨ', reading: 'yo' }],
+                ra: [{ char: 'ラ', reading: 'ra' }, { char: 'リ', reading: 'ri' }, { char: 'ル', reading: 'ru' }, { char: 'レ', reading: 're' }, { char: 'ロ', reading: 'ro' }],
+                wa: [{ char: 'ワ', reading: 'wa' }, { char: 'ヲ', reading: 'wo' }, { char: 'ン', reading: 'n' }],
+                ga: [{ char: 'ガ', reading: 'ga' }, { char: 'ギ', reading: 'gi' }, { char: 'グ', reading: 'gu' }, { char: 'ゲ', reading: 'ge' }, { char: 'ゴ', reading: 'go' }],
+                za: [{ char: 'ザ', reading: 'za' }, { char: 'ジ', reading: 'ji' }, { char: 'ズ', reading: 'zu' }, { char: 'ゼ', reading: 'ze' }, { char: 'ゾ', reading: 'zo' }],
+                da: [{ char: 'ダ', reading: 'da' }, { char: 'ヂ', reading: 'ji' }, { char: 'ヅ', reading: 'zu' }, { char: 'デ', reading: 'de' }, { char: 'ド', reading: 'do' }],
+                ba: [{ char: 'バ', reading: 'ba' }, { char: 'ビ', reading: 'bi' }, { char: 'ブ', reading: 'bu' }, { char: 'ベ', reading: 'be' }, { char: 'ボ', reading: 'bo' }],
+                pa: [{ char: 'パ', reading: 'pa' }, { char: 'ピ', reading: 'pi' }, { char: 'プ', reading: 'pu' }, { char: 'ペ', reading: 'pe' }, { char: 'ポ', reading: 'po' }],
+                kya: [{ char: 'キャ', reading: 'kya' }, { char: 'キュ', reading: 'kyu' }, { char: 'キョ', reading: 'kyo' }],
+                sha: [{ char: 'シャ', reading: 'sha' }, { char: 'シュ', reading: 'shu' }, { char: 'ショ', reading: 'sho' }],
+                cha: [{ char: 'チャ', reading: 'cha' }, { char: 'チュ', reading: 'chu' }, { char: 'チョ', reading: 'cho' }],
+                nya: [{ char: 'ニャ', reading: 'nya' }, { char: 'ニュ', reading: 'nyu' }, { char: 'ニョ', reading: 'nyo' }],
+                hya: [{ char: 'ヒャ', reading: 'hya' }, { char: 'ヒュ', reading: 'hyu' }, { char: 'ヒョ', reading: 'hyo' }],
+                mya: [{ char: 'ミャ', reading: 'mya' }, { char: 'ミュ', reading: 'myu' }, { char: 'ミョ', reading: 'myo' }],
+                rya: [{ char: 'リャ', reading: 'rya' }, { char: 'リュ', reading: 'ryu' }, { char: 'リョ', reading: 'ryo' }],
+                gya: [{ char: 'ギャ', reading: 'gya' }, { char: 'ギュ', reading: 'gyu' }, { char: 'ギョ', reading: 'gyo' }],
+                ja: [{ char: 'ジャ', reading: 'ja' }, { char: 'ジュ', reading: 'ju' }, { char: 'ジョ', reading: 'jo' }],
+                bya: [{ char: 'ビャ', reading: 'bya' }, { char: 'ビュ', reading: 'byu' }, { char: 'ビョ', reading: 'byo' }],
+                pya: [{ char: 'ピャ', reading: 'pya' }, { char: 'ピュ', reading: 'pyu' }, { char: 'ピョ', reading: 'pyo' }]
+            }
+        };
+
+        // Текущее состояние
+        let currentState = {
+            kanaType: 'hiragana',
+            practiceMode: 'input',
+            selectionMode: 'line',
+            selectedRows: ['a'],
+            currentCharacter: null,
+            correctAnswers: 0,
+            wrongAnswers: 0,
+            streak: 0,
+            charactersPool: []
+        };
+
+        // DOM элементы
+        const elements = {
+            hiraganaSwitch: document.getElementById('hiragana-switch'),
+            katakanaSwitch: document.getElementById('katakana-switch'),
+            hiraganaRows: document.getElementById('hiragana-rows'),
+            katakanaRows: document.getElementById('katakana-rows'),
+            kanaCharacter: document.getElementById('kana-character'),
+            readingDisplay: document.getElementById('reading-display'),
+            answerInput: document.getElementById('answer-input'),
+            inputMode: document.getElementById('input-mode'),
+            choiceMode: document.getElementById('choice-mode'),
+            answerChoices: document.getElementById('answer-choices'),
+            reverseMode: document.getElementById('reverse-mode'),
+            characterChoices: document.getElementById('character-choices'),
+            writingMode: document.getElementById('writing-mode'),
+            drawingCanvas: document.getElementById('drawing-canvas'),
+            clearDrawing: document.getElementById('clear-drawing'),
+            checkDrawing: document.getElementById('check-drawing'),
+            resultMessage: document.getElementById('result-message'),
+            messageText: document.getElementById('message-text'),
+            correctAnswer: document.getElementById('correct-answer'),
+            checkBtn: document.getElementById('check-btn'),
+            skipBtn: document.getElementById('skip-btn'),
+            correctCount: document.getElementById('correct-count'),
+            wrongCount: document.getElementById('wrong-count'),
+            streakCount: document.getElementById('streak-count'),
+            modeOptions: document.querySelectorAll('.mode-option'),
+            selectionOptions: document.querySelectorAll('[name="symbol-selection"]'),
+            rowOptions: document.querySelectorAll('.kana-row'),
+            toggleTableBtn: document.getElementById('toggle-table-btn'),
+            pronunciationTable: document.getElementById('pronunciation-table'),
+            overlay: document.getElementById('overlay'),
+            hiraganaTable: document.getElementById('hiragana-table'),
+            katakanaTable: document.getElementById('katakana-table')
+        };
+
+        // Инициализация canvas для рисования
+        const canvas = elements.drawingCanvas;
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Установка размеров canvas
+        function setupCanvas() {
+            const container = canvas.parentElement;
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+            
+            // Устанавливаем размеры canvas с учетом pixel ratio
+            const scale = window.devicePixelRatio || 1;
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            
+            // Масштабируем контекст
+            ctx.scale(scale, scale);
+            
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+        }
+
+        // Обработчики событий для рисования
+        function startDrawing(e) {
+            isDrawing = true;
+            const pos = getMousePos(canvas, e);
+            [lastX, lastY] = [pos.x, pos.y];
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const pos = getMousePos(canvas, e);
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            [lastX, lastY] = [pos.x, pos.y];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function getMousePos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (evt.clientX || evt.touches[0].clientX) - rect.left,
+                y: (evt.clientY || evt.touches[0].clientY) - rect.top
+            };
+        }
+
+        elements.clearDrawing.addEventListener('click', () => {
+            const width = canvas.width / (window.devicePixelRatio || 1);
+            const height = canvas.height / (window.devicePixelRatio || 1);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+        });
+
+        // Переключение таблицы произношения
+        elements.toggleTableBtn.addEventListener('click', () => {
+            elements.pronunciationTable.classList.toggle('show');
+            elements.overlay.classList.toggle('show');
+        });
+
+        elements.overlay.addEventListener('click', () => {
+            elements.pronunciationTable.classList.remove('show');
+            elements.overlay.classList.remove('show');
+            generateNewCharacter(); // Обновляем символ при закрытии таблицы
+        });
+
+        // Инициализация при загрузке
+        window.addEventListener('DOMContentLoaded', () => {
+            setupCanvas();
+            initEventListeners();
+            generateNewCharacter();
+            
+            // Загрузка данных пользователя
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0
+            };
+            
+            // Сохранение данных пользователя
+            localStorage.setItem('nihongoMasterUser', JSON.stringify(userData));
+        });
+
+        window.addEventListener('resize', setupCanvas);
+
+        function initEventListeners() {
+            // Переключение между хираганой и катаканой
+            elements.hiraganaSwitch.addEventListener('click', () => {
+                if (currentState.kanaType !== 'hiragana') {
+                    currentState.kanaType = 'hiragana';
+                    elements.hiraganaSwitch.classList.add('active');
+                    elements.katakanaSwitch.classList.remove('active');
+                    elements.hiraganaRows.style.display = 'grid';
+                    elements.katakanaRows.style.display = 'none';
+                    elements.hiraganaTable.style.display = 'block';
+                    elements.katakanaTable.style.display = 'none';
+                    
+                    // Сохраняем выбранные строки при переключении
+                    const activeRows = Array.from(document.querySelectorAll('.kana-row.active')).map(row => row.dataset.row);
+                    currentState.selectedRows = activeRows.length > 0 ? activeRows : ['a'];
+                    
+                    generateNewCharacter();
+                }
+            });
+
+            elements.katakanaSwitch.addEventListener('click', () => {
+                if (currentState.kanaType !== 'katakana') {
+                    currentState.kanaType = 'katakana';
+                    elements.katakanaSwitch.classList.add('active');
+                    elements.hiraganaSwitch.classList.remove('active');
+                    elements.katakanaRows.style.display = 'grid';
+                    elements.hiraganaRows.style.display = 'none';
+                    elements.hiraganaTable.style.display = 'none';
+                    elements.katakanaTable.style.display = 'block';
+                    
+                    // Сохраняем выбранные строки при переключении
+                    const activeRows = Array.from(document.querySelectorAll('.kana-row.active')).map(row => row.dataset.row);
+                    currentState.selectedRows = activeRows.length > 0 ? activeRows : ['a'];
+                    
+                    generateNewCharacter();
+                }
+            });
+
+            // Выбор режима тренировки
+            document.querySelectorAll('[name="practice-mode"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    // Удаляем активный класс со всех вариантов
+                    document.querySelectorAll('.mode-option').forEach(option => {
+                        option.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс к выбранному варианту
+                    e.target.closest('.mode-option').classList.add('active');
+                    
+                    currentState.practiceMode = e.target.closest('.mode-option').dataset.mode;
+                    updatePracticeMode();
+                });
+            });
+
+            // Выбор режима выбора символов
+            document.querySelectorAll('[name="symbol-selection"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    // Удаляем активный класс со всех вариантов
+                    document.querySelectorAll('.mode-option').forEach(option => {
+                        option.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс к выбранному варианту
+                    e.target.closest('.mode-option').classList.add('active');
+                    
+                    currentState.selectionMode = e.target.closest('.mode-option').dataset.selection;
+                    generateNewCharacter();
+                });
+            });
+
+            // Выбор строки
+            elements.rowOptions.forEach(row => {
+                row.addEventListener('click', () => {
+                    const rowId = row.dataset.row;
+                    
+                    if (currentState.selectionMode === 'line') {
+                        // Для построчного режима можно выбрать несколько строк
+                        if (row.classList.contains('active')) {
+                            row.classList.remove('active');
+                            currentState.selectedRows = currentState.selectedRows.filter(r => r !== rowId);
+                        } else {
+                            row.classList.add('active');
+                            if (!currentState.selectedRows.includes(rowId)) {
+                                currentState.selectedRows.push(rowId);
+                            }
+                        }
+                        
+                        // Если ни одна строка не выбрана, выбираем текущую
+                        if (currentState.selectedRows.length === 0) {
+                            row.classList.add('active');
+                            currentState.selectedRows.push(rowId);
+                        }
+                        
+                        generateNewCharacter();
+                    }
+                });
+            });
+
+            // Кнопки управления
+            elements.checkBtn.addEventListener('click', checkAnswer);
+            elements.skipBtn.addEventListener('click', generateNewCharacter);
+
+            // Обработка нажатия Enter в поле ввода
+            elements.answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+
+            // Обработка кликов по вариантам ответа
+            elements.answerChoices.addEventListener('click', (e) => {
+                if (e.target.classList.contains('answer-option')) {
+                    const userAnswer = e.target.dataset.choice;
+                    checkAnswer(userAnswer);
+                }
+            });
+
+            elements.characterChoices.addEventListener('click', (e) => {
+                if (e.target.classList.contains('answer-option')) {
+                    const userAnswer = e.target.dataset.char;
+                    checkAnswer(userAnswer);
+                }
+            });
+
+            elements.checkDrawing.addEventListener('click', () => {
+                // Проверяем, нарисовал ли пользователь символ
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const hasDrawing = !imageData.data.every((val, index) => {
+                    // Пропускаем альфа-канал (каждый 4-й элемент)
+                    return index % 4 === 3 || val === 255;
+                });
+                
+                if (hasDrawing) {
+                    // В реальном приложении здесь должна быть проверка на правильность нарисованного символа
+                    // В данном примере просто считаем, что ответ правильный
+                    showResult(true);
+                    setTimeout(generateNewCharacter, 1500);
+                } else {
+                    alert('Пожалуйста, нарисуйте символ перед проверкой');
+                }
+            });
+
+            // Добавляем обработчики событий для canvas
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Для сенсорных устройств
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+            
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+            
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+        }
+
+        function updatePracticeMode() {
+            // Скрываем все режимы
+            elements.inputMode.style.display = 'none';
+            elements.choiceMode.style.display = 'none';
+            elements.reverseMode.style.display = 'none';
+            elements.writingMode.style.display = 'none';
+            elements.kanaCharacter.style.display = 'none';
+            elements.readingDisplay.style.display = 'none';
+
+            // Показываем текущий режим
+            switch (currentState.practiceMode) {
+                case 'input':
+                    elements.inputMode.style.display = 'block';
+                    elements.kanaCharacter.style.display = 'flex';
+                    elements.checkBtn.style.display = 'block';
+                    elements.checkBtn.textContent = 'Проверить';
+                    break;
+                case 'choice':
+                    elements.choiceMode.style.display = 'block';
+                    elements.kanaCharacter.style.display = 'flex';
+                    elements.checkBtn.style.display = 'none';
+                    break;
+                case 'reverse':
+                    elements.reverseMode.style.display = 'block';
+                    elements.readingDisplay.style.display = 'flex';
+                    elements.checkBtn.style.display = 'none';
+                    break;
+                case 'writing':
+                    elements.writingMode.style.display = 'block';
+                    elements.kanaCharacter.style.display = 'flex';
+                    elements.checkBtn.style.display = 'none';
+                    break;
+            }
+
+            generateNewCharacter();
+        }
+
+        function generateNewCharacter() {
+            // Очищаем предыдущие результаты
+            elements.resultMessage.classList.remove('success', 'error');
+            elements.resultMessage.style.display = 'none';
+            elements.answerInput.value = '';
+            
+            // Очищаем canvas
+            const width = canvas.width / (window.devicePixelRatio || 1);
+            const height = canvas.height / (window.devicePixelRatio || 1);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+
+            // Генерируем новый символ в зависимости от режима выбора
+            let characters = [];
+            
+            if (currentState.selectionMode === 'line') {
+                // Собираем символы из всех выбранных строк
+                currentState.selectedRows.forEach(row => {
+                    if (kanaData[currentState.kanaType][row]) {
+                        characters = characters.concat(kanaData[currentState.kanaType][row]);
+                    }
+                });
+            } else if (currentState.selectionMode === 'random') {
+                // Собираем все символы выбранного типа каны
+                for (const row in kanaData[currentState.kanaType]) {
+                    characters = characters.concat(kanaData[currentState.kanaType][row]);
+                }
+            }
+
+            if (characters.length > 0) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                currentState.currentCharacter = characters[randomIndex];
+                displayCharacter();
+            }
+        }
+
+        function displayCharacter() {
+            if (!currentState.currentCharacter) return;
+
+            // Отображаем символ или чтение в зависимости от режима
+            if (currentState.practiceMode === 'reverse') {
+                // В обратном режиме показываем чтение большими буквами
+                elements.readingDisplay.textContent = currentState.currentCharacter.reading.toUpperCase();
+                
+                // Генерируем варианты символов
+                const correctChar = currentState.currentCharacter.char;
+                let chars = [correctChar];
+                
+                // Добавляем случайные неправильные варианты
+                const allChars = Object.values(kanaData[currentState.kanaType]).flat().map(c => c.char);
+                while (chars.length < 4) {
+                    const randomChar = allChars[Math.floor(Math.random() * allChars.length)];
+                    if (!chars.includes(randomChar)) {
+                        chars.push(randomChar);
+                    }
+                }
+                
+                // Перемешиваем
+                chars = shuffleArray(chars);
+                
+                // Обновляем варианты
+                elements.characterChoices.innerHTML = '';
+                chars.forEach(char => {
+                    const option = document.createElement('div');
+                    option.className = 'answer-option';
+                    option.dataset.char = char;
+                    option.textContent = char;
+                    elements.characterChoices.appendChild(option);
+                });
+            } else {
+                // В других режимах показываем символ
+                elements.kanaCharacter.textContent = currentState.currentCharacter.char;
+            }
+            
+            // Для режима выбора из вариантов генерируем варианты ответов
+            if (currentState.practiceMode === 'choice') {
+                const correctReading = currentState.currentCharacter.reading;
+                let readings = [correctReading];
+                
+                // Добавляем случайные неправильные варианты
+                const allReadings = Object.values(kanaData[currentState.kanaType]).flat().map(c => c.reading);
+                while (readings.length < 4) {
+                    const randomReading = allReadings[Math.floor(Math.random() * allReadings.length)];
+                    if (!readings.includes(randomReading)) {
+                        readings.push(randomReading);
+                    }
+                }
+                
+                // Перемешиваем
+                readings = shuffleArray(readings);
+                
+                // Обновляем варианты
+                elements.answerChoices.innerHTML = '';
+                readings.forEach(reading => {
+                    const option = document.createElement('div');
+                    option.className = 'answer-option';
+                    option.dataset.choice = reading;
+                    option.textContent = reading;
+                    elements.answerChoices.appendChild(option);
+                });
+            }
+        }
+
+        function checkAnswer(userAnswer = null) {
+            if (!currentState.currentCharacter) return;
+
+            let isCorrect = false;
+            
+            if (currentState.practiceMode === 'input') {
+                const userInput = elements.answerInput.value.trim().toLowerCase();
+                isCorrect = userInput === currentState.currentCharacter.reading;
+            } else if (userAnswer) {
+                if (currentState.practiceMode === 'choice') {
+                    isCorrect = userAnswer === currentState.currentCharacter.reading;
+                } else if (currentState.practiceMode === 'reverse') {
+                    isCorrect = userAnswer === currentState.currentCharacter.char;
+                } else if (currentState.practiceMode === 'writing') {
+                    // В реальном приложении здесь должна быть проверка нарисованного символа
+                    // В данном примере просто считаем, что ответ правильный
+                    isCorrect = true;
+                }
+            }
+
+            showResult(isCorrect);
+            
+            if (isCorrect) {
+                // Начисляем XP за правильный ответ
+                addXP(10);
+                
+                // Обновляем прогресс изучения каны
+                updateKanaProgress();
+            }
+            
+            if (currentState.practiceMode !== 'writing') {
+                setTimeout(generateNewCharacter, isCorrect ? 800 : 2000);
+            } else {
+                setTimeout(generateNewCharacter, 1500);
+            }
+        }
+
+        function showResult(isCorrect) {
+            if (isCorrect) {
+                currentState.correctAnswers++;
+                currentState.streak++;
+                elements.resultMessage.className = 'result-message success';
+                elements.messageText.textContent = 'Правильно!';
+                elements.correctAnswer.textContent = '';
+            } else {
+                currentState.wrongAnswers++;
+                currentState.streak = 0;
+                elements.resultMessage.className = 'result-message error';
+                elements.messageText.textContent = 'Неправильно';
+                if (currentState.practiceMode === 'reverse') {
+                    elements.correctAnswer.textContent = `Правильный символ: ${currentState.currentCharacter.char}`;
+                } else {
+                    elements.correctAnswer.textContent = `Правильный ответ: ${currentState.currentCharacter.reading}`;
+                }
+            }
+            
+            elements.resultMessage.style.display = 'block';
+            updateStats();
+        }
+
+        function updateStats() {
+            elements.correctCount.textContent = currentState.correctAnswers;
+            elements.wrongCount.textContent = currentState.wrongAnswers;
+            elements.streakCount.textContent = currentState.streak;
+        }
+
+        // Добавление XP пользователю
+        function addXP(amount) {
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0
+            };
+            
+            userData.xp += amount;
+            
+            // Проверка на повышение уровня
+            if (userData.xp >= userData.nextLevelXp) {
+                userData.level++;
+                userData.xp = userData.xp - userData.nextLevelXp;
+                userData.nextLevelXp = Math.floor(userData.nextLevelXp * 1.2); // Увеличиваем XP для следующего уровня
+                
+                // Можно показать уведомление о новом уровне
+                alert(`Поздравляем! Вы достигли уровня ${userData.level}`);
+            }
+            
+            localStorage.setItem('nihongoMasterUser', JSON.stringify(userData));
+        }
+
+        // Обновление прогресса изучения каны
+        function updateKanaProgress() {
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0
+            };
+            
+            if (currentState.kanaType === 'hiragana') {
+                // Увеличиваем прогресс изучения хираганы
+                userData.hiraganaProgress = Math.min(userData.hiraganaProgress + 0.5, 100);
+            } else {
+                // Увеличиваем прогресс изучения катаканы
+                userData.katakanaProgress = Math.min(userData.katakanaProgress + 0.5, 100);
+            }
+            
+            localStorage.setItem('nihongoMasterUser', JSON.stringify(userData));
+        }
+
+        // Вспомогательные функции
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игровые упражнения | Nihongo Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #f1c40f;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: white;
+        }
+        
+        .back-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .page-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .game-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .game-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .game-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+        }
+        
+        .game-title {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.8rem;
+            z-index: 2;
+        }
+        
+        .game-content {
+            padding: 20px;
+        }
+        
+        .game-description {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .game-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .game-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .difficulty-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        
+        .beginner {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+        }
+        
+        .intermediate {
+            background-color: rgba(241, 196, 15, 0.2);
+            color: #f39c12;
+        }
+        
+        .advanced {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--error);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="menu.html" class="logo">Nihongo<span>Master</span></a>
+            <a href="menu.html" class="back-btn">На главную</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1 class="page-title">🎮 Разнообразные упражнения</h1>
+        <p class="page-description">Изучайте японский язык через увлекательные игры и нестандартные упражнения. Выбирайте режим по своему уровню и предпочтениям!</p>
+        
+        <h2 class="section-title">Игровые режимы</h2>
+        <div class="games-grid">
+            <!-- Игра 1 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Космический рейс</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag beginner">N5-N4</span> Хирагана/Катакана</span>
+                        <span>⏱️ 2-5 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Управляйте космическим кораблем, правильно отвечая на вопросы. Каждый правильный ответ - шаг ближе к спасению планеты! 
+                        Избегайте астероидов, собирайте бонусы и улучшайте свой корабль.
+                    </p>
+                   <a href="space-flight.html" class="game-btn">Начать игру</a>
+                </div>
+            </div>
+            
+            <!-- Игра 2 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-1.2.1&auto=format&fit=crop&w=1351&q=80');">
+                    <h3 class="game-title">Тайный храм</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag intermediate">N4-N3</span> Кандзи</span>
+                        <span>⏱️ 5-10 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Исследуйте древний японский храм, разгадывая загадки и находя скрытые кандзи. 
+                        Собирайте коллекцию артефактов и открывайте новые уровни сложности.
+                    </p>
+                    <a href="#" class="game-btn">Начать игру</a>
+                </div>
+            </div>
+            
+            <!-- Игра 3 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1553481187-be93c21490a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Скоростной поезд</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag beginner">N5-N4</span> Словарный запас</span>
+                        <span>⏱️ 1-3 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Путешествуйте на синкансэне между городами Японии, быстро отвечая на вопросы. 
+                        Чем больше правильных ответов подряд, тем выше скорость поезда и больше очков!
+                    </p>
+                    <a href="#" class="game-btn">Начать игру</a>
+                </div>
+            </div>
+            
+            <!-- Игра 4 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Самурайский вызов</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag advanced">N3-N1</span> Грамматика</span>
+                        <span>⏱️ 3-7 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Сразитесь с искусственным интеллектом в поединке знаний японской грамматики. 
+                        Каждый правильный ответ - удар мечом! Соберите полный комплект доспехов самурая.
+                    </p>
+                    <a href="#" class="game-btn">Начать игру</a>
+                </div>
+            </div>
+            
+            <!-- Игра 5 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1542051841857-5f90071e7989?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Мемори-битва</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag beginner">N5-N4</span> Все темы</span>
+                        <span>⏱️ 2-4 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Классическая игра на память с японским уклоном. Находите пары: кандзи и чтение, 
+                        картинку и слово, вопрос и ответ. Открывайте новые тематические наборы карточек.
+                    </p>
+                    <a href="memory-battle.html" class="game-btn">Начать игру</a>
+                </div>
+            </div>
+            
+            <!-- Игра 6 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1518655048521-f130df041f66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Каллиграфический вызов</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag intermediate">N4-N2</span> Написание</span>
+                        <span>⏱️ 3-5 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Нарисуйте кандзи за ограниченное время с максимальной точностью. 
+                        Соревнуйтесь с другими игроками за звание лучшего каллиграфа. 
+                        Открывайте исторические стили письма.
+                    </p>
+                    <a href="#" class="game-btn">Начать игру</a>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Специальные режимы</h2>
+        <div class="games-grid">
+            <!-- Режим 1 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1519817650390-64a93db51149?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Аудио-квест</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag intermediate">N4-N2</span> Аудирование</span>
+                        <span>⏱️ 5-15 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Погрузитесь в атмосферу Японии через аудио-истории. Отвечайте на вопросы, 
+                        следите за диалогами и выполняйте задания на слух. Разные акценты и скорости речи.
+                    </p>
+                    <a href="#" class="game-btn">Попробовать</a>
+                </div>
+            </div>
+            
+            <!-- Режим 2 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Диалог с AI</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag advanced">N3-N1</span> Разговорная речь</span>
+                        <span>⏱️ 10-30 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Практикуйте разговорный японский с искусственным интеллектом. 
+                        Выбирайте сценарии: ресторан, магазин, собеседование и другие. 
+                        Получайте оценку произношения и грамматики.
+                    </p>
+                    <a href="#" class="game-btn">Попробовать</a>
+                </div>
+            </div>
+            
+            <!-- Режим 3 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1516483638261-f4dbaf036963?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Манга-переводчик</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag advanced">N2-N1</span> Чтение</span>
+                        <span>⏱️ 10-20 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Читайте настоящие манги на японском с подсказками и словарем. 
+                        Переводите фразы, угадывайте значения по контексту. 
+                        Коллекция из популярных и классических произведений.
+                    </p>
+                    <a href="#" class="game-btn">Попробовать</a>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Ежедневные испытания</h2>
+        <div class="games-grid">
+            <!-- Испытание 1 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">10 за 60</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag beginner">N5-N4</span> Все темы</span>
+                        <span>⏱️ 1 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Ответьте правильно на 10 вопросов за 60 секунд! Ежедневное испытание 
+                        с растущей сложностью. Сравните свои результаты с другими игроками.
+                    </p>
+                    <a href="#" class="game-btn">Принять вызов</a>
+                </div>
+            </div>
+            
+            <!-- Испытание 2 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1517649763962-0c623066013b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Кандзи дня</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag intermediate">N4-N2</span> Кандзи</span>
+                        <span>⏱️ 3-5 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Изучите новый кандзи каждый день с историей его происхождения, 
+                        примерами использования и мнемоническими подсказками. 
+                        Соберите всю коллекцию!
+                    </p>
+                    <a href="#" class="game-btn">Изучить сегодня</a>
+                </div>
+            </div>
+            
+            <!-- Испытание 3 -->
+            <div class="game-card">
+                <div class="game-image" style="background-image: url('https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="game-title">Стрик-челлендж</h3>
+                </div>
+                <div class="game-content">
+                    <div class="game-stats">
+                        <span><span class="difficulty-tag advanced">N3-N1</span> Все темы</span>
+                        <span>⏱️ 5-10 мин</span>
+                    </div>
+                    <p class="game-description">
+                        Поддерживайте свою ежедневную серию! Каждый день новые задания 
+                        с бонусами за непрерывное прохождение. Не пропустите ни дня!
+                    </p>
+                    <a href="#" class="game-btn">Продолжить серию</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Загрузка данных пользователя для персонализации
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0
+            };
+            
+            // Можно использовать данные пользователя для рекомендаций игр
+            // Например, скрывать слишком сложные игры для новичков
+        });
+    </script>
+</body>
+</html>

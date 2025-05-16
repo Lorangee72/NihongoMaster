@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мемори-битва | Nihongo Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #f1c40f;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #0a0a1a;
+            color: white;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: rgba(44, 62, 80, 0.8);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: white;
+        }
+        
+        .back-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .game-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: url('https://images.unsplash.com/photo-1542051841857-5f90071e7989?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+        }
+        
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+        
+        .game-content {
+            position: relative;
+            z-index: 2;
+            width: 90%;
+            max-width: 800px;
+            background: rgba(44, 62, 80, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(241, 196, 15, 0.3);
+            text-align: center;
+        }
+        
+        .game-title {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .game-description {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .game-screen {
+            width: 100%;
+            min-height: 400px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        .memory-card {
+            width: calc(25% - 20px);
+            height: 100px;
+            margin: 10px;
+            background-color: var(--secondary);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+        
+        .memory-card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .memory-card.matched {
+            background-color: rgba(46, 204, 113, 0.3);
+            border: 2px solid var(--success);
+            cursor: default;
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+        }
+        
+        .card-front {
+            background-color: var(--accent);
+            color: var(--dark);
+            transform: rotateY(180deg);
+        }
+        
+        .card-back {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            margin-right: 5px;
+            color: var(--accent);
+        }
+        
+        .start-btn, .restart-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .start-btn:hover, .restart-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(46, 204, 113, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 30;
+            display: none;
+        }
+        
+        .game-over h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .timer {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .memory-card {
+                width: calc(33% - 10px);
+                height: 80px;
+                margin: 5px;
+                font-size: 1.5rem;
+            }
+            
+            .game-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="menu.html" class="logo">Nihongo<span>Master</span></a>
+            <a href="gamee.html" class="back-btn">Назад к играм</a>
+        </div>
+    </div>
+    
+    <div class="game-container">
+        <div class="game-content">
+            <h1 class="game-title">Мемори-битва</h1>
+            <p class="game-description">
+                Классическая игра на память с японским уклоном. Сначала открывайте вопросы, затем ищите соответствующие ответы.
+                Открывайте новые тематические наборы карточек.
+            </p>
+            
+            <div class="game-stats">
+                <div class="stat">
+                    <span class="stat-icon">⭐</span>
+                    <span id="score">Очки: 0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-icon">🕒</span>
+                    <span id="timer">Время: 60</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-icon">🔍</span>
+                    <span id="moves">Ходы: 0</span>
+                </div>
+            </div>
+            
+            <div class="game-screen" id="gameScreen">
+                <!-- Карточки будут добавлены через JavaScript -->
+            </div>
+            
+            <div class="game-over" id="gameOver">
+                <h2>Игра окончена!</h2>
+                <div class="score-display">Ваш счет: <span id="finalScore">0</span></div>
+                <div class="score-display">Правильных пар: <span id="pairsMatched">0</span></div>
+                <button class="restart-btn" id="restartBtn">Играть снова</button>
+            </div>
+            
+            <button class="start-btn" id="startBtn">Начать игру</button>
+        </div>
+    </div>
+    
+    <script>
+        // Игровые переменные
+        let gameActive = false;
+        let score = 0;
+        let timeLeft = 60;
+        let moves = 0;
+        let timer;
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matchedPairs = 0;
+        let totalPairs = 0;
+        let currentQuestion = null;
+        
+        // Тематические наборы карточек
+        const cardSets = {
+            hiragana: [
+                { question: "Как читается этот символ: あ?", answer: "a" },
+                { question: "Как читается этот символ: い?", answer: "i" },
+                { question: "Как читается этот символ: う?", answer: "u" },
+                { question: "Как читается этот символ: え?", answer: "e" },
+                { question: "Как читается этот символ: お?", answer: "o" },
+                { question: "Какой символ соответствует звуку 'ka'?", answer: "か" },
+                { question: "Какой символ соответствует звуку 'ki'?", answer: "き" },
+                { question: "Какой символ соответствует звуку 'ku'?", answer: "く" },
+                { question: "Какой символ соответствует звуку 'ke'?", answer: "け" },
+                { question: "Какой символ соответствует звуку 'ko'?", answer: "こ" },
+                { question: "Какой символ соответствует звуку 'sa'?", answer: "さ" },
+                { question: "Какой символ соответствует звуку 'shi'?", answer: "し" }
+            ],
+            katakana: [
+                { question: "Как читается этот символ: ア?", answer: "a" },
+                { question: "Как читается этот символ: イ?", answer: "i" },
+                { question: "Как читается этот символ: ウ?", answer: "u" },
+                { question: "Как читается этот символ: エ?", answer: "e" },
+                { question: "Как читается этот символ: オ?", answer: "o" },
+                { question: "Какой символ соответствует звуку 'ka' в катакане?", answer: "カ" },
+                { question: "Какой символ соответствует звуку 'ki' в катакане?", answer: "キ" },
+                { question: "Какой символ соответствует звуку 'ku' в катакане?", answer: "ク" },
+                { question: "Какой символ соответствует звуку 'ke' в катакане?", answer: "ケ" },
+                { question: "Какой символ соответствует звуку 'ko' в катакане?", answer: "コ" },
+                { question: "Какой символ соответствует звуку 'sa' в катакане?", answer: "サ" },
+                { question: "Какой символ соответствует звуку 'shi' в катакане?", answer: "シ" }
+            ],
+            kanji: [
+                { question: "Как читается этот кандзи: 日?", answer: "にち (nichi)" },
+                { question: "Как читается этот кандзи: 月?", answer: "つき (tsuki)" },
+                { question: "Как читается этот кандзи: 火?", answer: "ひ (hi)" },
+                { question: "Как читается этот кандзи: 水?", answer: "みず (mizu)" },
+                { question: "Как читается этот кандзи: 木?", answer: "き (ki)" },
+                { question: "Какой кандзи означает 'солнце, день'?", answer: "日" },
+                { question: "Какой кандзи означает 'луна, месяц'?", answer: "月" },
+                { question: "Какой кандзи означает 'огонь'?", answer: "火" },
+                { question: "Какой кандзи означает 'вода'?", answer: "水" },
+                { question: "Какой кандзи означает 'дерево'?", answer: "木" }
+            ],
+            vocabulary: [
+                { question: "Как сказать 'спасибо' по-японски?", answer: "ありがとう" },
+                { question: "Как сказать 'здравствуйте' по-японски?", answer: "こんにちは" },
+                { question: "Как сказать 'до свидания' по-японски?", answer: "さようなら" },
+                { question: "Как сказать 'доброе утро' по-японски?", answer: "おはよう" },
+                { question: "Как сказать 'добрый вечер' по-японски?", answer: "こんばんは" },
+                { question: "Что означает 'すみません'?", answer: "извините" },
+                { question: "Что означает 'わたし'?", answer: "я" },
+                { question: "Что означает 'あなた'?", answer: "ты, вы" },
+                { question: "Что означает 'ともだち'?", answer: "друг" },
+                { question: "Что означает 'せんせい'?", answer: "учитель" }
+            ]
+        };
+        
+        // Элементы DOM
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const gameScreen = document.getElementById('gameScreen');
+        const gameOverScreen = document.getElementById('gameOver');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const movesDisplay = document.getElementById('moves');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const pairsMatchedDisplay = document.getElementById('pairsMatched');
+        
+        // Начало игры
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+        
+        function startGame() {
+            gameActive = true;
+            score = 0;
+            timeLeft = 60;
+            moves = 0;
+            matchedPairs = 0;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+            currentQuestion = null;
+            
+            updateStats();
+            startBtn.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            gameScreen.innerHTML = '';
+            
+            // Выбор случайного набора карточек (6 пар)
+            const setNames = Object.keys(cardSets);
+            const randomSetName = setNames[Math.floor(Math.random() * setNames.length)];
+            const selectedSet = cardSets[randomSetName];
+            
+            // Выбираем случайные 6 элементов из набора (или меньше, если набор маленький)
+            const pairsCount = Math.min(6, Math.floor(selectedSet.length / 2));
+            const shuffledSet = [...selectedSet].sort(() => 0.5 - Math.random()).slice(0, pairsCount);
+            totalPairs = pairsCount;
+            
+            // Создаем пары карточек (вопрос-ответ)
+            const cards = [];
+            shuffledSet.forEach(item => {
+                cards.push({ 
+                    type: 'question', 
+                    content: item.question, 
+                    pairId: item.question,
+                    answer: item.answer
+                });
+                cards.push({ 
+                    type: 'answer', 
+                    content: item.answer, 
+                    pairId: item.question
+                });
+            });
+            
+            // Перемешиваем карточки
+            const shuffledCards = [...cards].sort(() => 0.5 - Math.random());
+            
+            // Создаем HTML-элементы карточек
+            shuffledCards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'memory-card';
+                cardElement.dataset.index = index;
+                cardElement.dataset.pairId = card.pairId;
+                cardElement.dataset.type = card.type;
+                
+                const cardFront = document.createElement('div');
+                cardFront.className = 'card-front';
+                
+                // Показываем содержимое карточки (вопрос или ответ)
+                cardFront.textContent = card.content;
+                cardFront.style.fontSize = card.type === 'question' ? '1rem' : '1.5rem';
+                cardFront.style.padding = '5px';
+                cardFront.style.textAlign = 'center';
+                
+                const cardBack = document.createElement('div');
+                cardBack.className = 'card-back';
+                cardBack.textContent = card.type === 'question' ? '❓ Вопрос' : '❗ Ответ';
+                
+                cardElement.appendChild(cardFront);
+                cardElement.appendChild(cardBack);
+                cardElement.addEventListener('click', flipCard);
+                
+                gameScreen.appendChild(cardElement);
+            });
+            
+            // Запуск таймера
+            clearInterval(timer);
+            timer = setInterval(updateTimer, 1000);
+        }
+        
+        // Переворот карточки
+        function flipCard() {
+            if (!gameActive || lockBoard || this === firstCard || this.classList.contains('matched')) return;
+            
+            this.classList.add('flipped');
+            
+            // Если это первая карточка
+            if (!firstCard) {
+                firstCard = this;
+                
+                // Если это вопрос, запоминаем его
+                if (firstCard.dataset.type === 'question') {
+                    currentQuestion = firstCard;
+                } else {
+                    // Если первая карточка - ответ, не разрешаем выбирать
+                    setTimeout(() => {
+                        this.classList.remove('flipped');
+                        firstCard = null;
+                    }, 1000);
+                }
+                return;
+            }
+            
+            // Если это вторая карточка
+            secondCard = this;
+            
+            // Проверяем, что первая карточка - вопрос, а вторая - ответ
+            if (firstCard.dataset.type === 'question' && secondCard.dataset.type === 'answer') {
+                moves++;
+                updateStats();
+                lockBoard = true;
+                checkForMatch();
+            } else {
+                // Если порядок неправильный, переворачиваем обратно
+                lockBoard = true;
+                setTimeout(() => {
+                    firstCard.classList.remove('flipped');
+                    secondCard.classList.remove('flipped');
+                    resetBoard();
+                }, 1000);
+            }
+        }
+        
+        // Проверка совпадения карточек
+        function checkForMatch() {
+            const isMatch = firstCard.dataset.pairId === secondCard.dataset.pairId;
+            
+            if (isMatch) {
+                disableCards();
+                score += 10;
+                matchedPairs++;
+                updateStats();
+                
+                if (matchedPairs === totalPairs) {
+                    endGame(true);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+        
+        // Отключение совпавших карточек
+        function disableCards() {
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            
+            resetBoard();
+            currentQuestion = null;
+        }
+        
+        // Возврат несовпавших карточек
+        function unflipCards() {
+            setTimeout(() => {
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+                resetBoard();
+                currentQuestion = null;
+            }, 1000);
+        }
+        
+        // Сброс выбранных карточек
+        function resetBoard() {
+            [firstCard, secondCard] = [null, null];
+            lockBoard = false;
+        }
+        
+        // Обновление таймера
+        function updateTimer() {
+            if (!gameActive) return;
+            
+            timeLeft--;
+            timerDisplay.textContent = `Время: ${timeLeft}`;
+            
+            if (timeLeft <= 0) {
+                endGame(false);
+            }
+        }
+        
+        // Конец игры
+        function endGame(isWin) {
+            gameActive = false;
+            clearInterval(timer);
+            
+            finalScoreDisplay.textContent = score;
+            pairsMatchedDisplay.textContent = `${matchedPairs} из ${totalPairs}`;
+            
+            if (isWin) {
+                gameOverScreen.querySelector('h2').textContent = 'Победа!';
+                gameOverScreen.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+                score += timeLeft * 2; // Бонус за оставшееся время
+            } else {
+                gameOverScreen.querySelector('h2').textContent = 'Время вышло!';
+                gameOverScreen.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+            }
+            
+            updateStats();
+            gameOverScreen.style.display = 'block';
+        }
+        
+        // Обновление статистики
+        function updateStats() {
+            scoreDisplay.textContent = `Очки: ${score}`;
+            timerDisplay.textContent = `Время: ${timeLeft}`;
+            movesDisplay.textContent = `Ходы: ${moves}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изучение кандзи | Nihongo Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #f1c40f;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: white;
+        }
+        
+        .back-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .kanji-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .kanji-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--secondary);
+        }
+        
+        .kanji-title {
+            font-size: 2rem;
+            color: var(--secondary);
+            text-align: center;
+        }
+        
+        .kanji-content {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .kanji-selection {
+            width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .selection-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .selection-mode {
+            margin-bottom: 25px;
+        }
+        
+        .mode-title {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .mode-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .mode-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .mode-option:hover {
+            background-color: var(--light);
+        }
+        
+        .mode-option.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .mode-option input {
+            margin-right: 10px;
+        }
+        
+        .jlpt-levels {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .jlpt-level {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: var(--light);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .jlpt-level:hover {
+            background-color: #d6dbdf;
+        }
+        
+        .jlpt-level.active {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .kanji-practice {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .practice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .practice-title {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .practice-stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .practice-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .kanji-character {
+            font-size: 8rem;
+            font-weight: 500;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .kanji-table {
+            width: 100%;
+            max-width: 500px;
+            max-height: 300px;
+            overflow-y: auto;
+            border-collapse: collapse;
+            display: none;
+        }
+        
+        .kanji-table th, .kanji-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .kanji-table th {
+            background-color: var(--light);
+            position: sticky;
+            top: 0;
+        }
+        
+        .kanji-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .kanji-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .practice-answer {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .answer-option {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .answer-option:hover {
+            background-color: var(--light);
+        }
+        
+        .practice-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .control-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .primary-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .primary-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .secondary-btn {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .secondary-btn:hover {
+            background-color: #d6dbdf;
+        }
+        
+        .result-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+            display: block;
+        }
+        
+        .error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--error);
+            display: block;
+        }
+        
+        .correct-answer {
+            font-weight: 700;
+            margin-top: 5px;
+        }
+        
+        .drawing-container {
+            width: 100%;
+            max-width: 500px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            height: 200px;
+            position: relative;
+        }
+        
+        #drawing-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            background-color: white;
+            touch-action: none;
+        }
+        
+        .drawing-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .drawing-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .toggle-table-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .pronunciation-table {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .pronunciation-table.show {
+            transform: translateX(0);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .overlay.show {
+            display: block;
+        }
+        
+        @media (max-width: 900px) {
+            .kanji-content {
+                flex-direction: column;
+            }
+            
+            .kanji-selection {
+                width: 100%;
+            }
+            
+            .jlpt-levels {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .pronunciation-table {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .jlpt-levels {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .answer-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .kanji-character {
+                font-size: 6rem;
+                min-height: 150px;
+            }
+            
+            .pronunciation-table {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="menu.html" class="logo">Nihongo<span>Master</span></a>
+            <a href="menu.html" class="back-btn">На главную</a>
+        </div>
+    </div>
+    
+    <button class="toggle-table-btn" id="toggle-table-btn">漢</button>
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="pronunciation-table" id="pronunciation-table">
+        <h3>Таблица кандзи</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Кандзи</th>
+                    <th>Онъёми</th>
+                    <th>Значение</th>
+                    <th>Черты</th>
+                </tr>
+            </thead>
+            <tbody id="kanji-table-body">
+                <!-- Kanji table will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="kanji-container">
+        <div class="kanji-header">
+            <h1 class="kanji-title">Изучение кандзи</h1>
+        </div>
+        
+        <div class="kanji-content">
+            <div class="kanji-selection">
+                <h2 class="selection-title">Режим изучения</h2>
+                <div class="selection-mode">
+                    <h3 class="mode-title">Тип тренировки</h3>
+                    <div class="mode-options">
+                        <label class="mode-option active" data-mode="reading">
+                            <input type="radio" name="practice-mode" checked> Чтение
+                        </label>
+                        <label class="mode-option" data-mode="meaning">
+                            <input type="radio" name="practice-mode"> Значение
+                        </label>
+                        <label class="mode-option" data-mode="writing">
+                            <input type="radio" name="practice-mode"> Написание
+                        </label>
+                        <label class="mode-option" data-mode="character">
+                            <input type="radio" name="practice-mode"> Выбор кандзи
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="selection-mode">
+                    <h3 class="mode-title">Выбор кандзи</h3>
+                    <div class="mode-options">
+                        <label class="mode-option active" data-selection="level">
+                            <input type="radio" name="symbol-selection" checked> По уровням JLPT
+                        </label>
+                        <label class="mode-option" data-selection="random">
+                            <input type="radio" name="symbol-selection"> Случайный кандзи
+                        </label>
+                    </div>
+                </div>
+                
+                <h2 class="selection-title">Выберите уровень JLPT</h2>
+                <div class="jlpt-levels" id="jlpt-levels">
+                    <div class="jlpt-level active" data-level="n5">N5</div>
+                    <div class="jlpt-level" data-level="n4">N4</div>
+                    <div class="jlpt-level" data-level="n3">N3</div>
+                    <div class="jlpt-level" data-level="n2">N2</div>
+                    <div class="jlpt-level" data-level="n1">N1</div>
+                </div>
+            </div>
+            
+            <div class="kanji-practice">
+                <div class="practice-header">
+                    <h2 class="practice-title">Тренировка</h2>
+                    <div class="practice-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="correct-count">0</div>
+                            <div class="stat-label">Правильно</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="wrong-count">0</div>
+                            <div class="stat-label">Ошибки</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="streak-count">0</div>
+                            <div class="stat-label">Серия</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="practice-area">
+                    <div class="kanji-character" id="kanji-character">日</div>
+                    
+                    <table class="kanji-table" id="kanji-table">
+                        <thead>
+                            <tr>
+                                <th>Кандзи</th>
+                                <th>Онъёми</th>
+                                <th>Значение</th>
+                                <th>Черты</th>
+                            </tr>
+                        </thead>
+                        <tbody id="current-kanji-table">
+                            <!-- Current kanji info will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="practice-answer" id="reading-mode">
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Введите чтение (ромадзи)">
+                    </div>
+                    
+                    <div class="practice-answer" id="meaning-mode" style="display: none;">
+                        <input type="text" class="answer-input" id="meaning-input" placeholder="Введите значение">
+                    </div>
+                    
+                    <div class="practice-answer" id="character-mode" style="display: none;">
+                        <div class="answer-options" id="kanji-choices">
+                            <div class="answer-option" data-kanji="日">日</div>
+                            <div class="answer-option" data-kanji="月">月</div>
+                            <div class="answer-option" data-kanji="人">人</div>
+                            <div class="answer-option" data-kanji="水">水</div>
+                        </div>
+                    </div>
+                    
+                    <div class="practice-answer" id="writing-mode" style="display: none;">
+                        <div class="drawing-container">
+                            <canvas id="drawing-canvas"></canvas>
+                        </div>
+                        <div class="drawing-controls">
+                            <button class="drawing-btn" id="clear-drawing">Очистить</button>
+                            <button class="drawing-btn" id="check-drawing">Проверить</button>
+                        </div>
+                    </div>
+                    
+                    <div class="result-message" id="result-message">
+                        <div id="message-text"></div>
+                        <div class="correct-answer" id="correct-answer"></div>
+                    </div>
+                </div>
+                
+                <div class="practice-controls">
+                    <button class="control-btn secondary-btn" id="show-table-btn">Показать таблицу</button>
+                    <button class="control-btn secondary-btn" id="skip-btn">Пропустить</button>
+                    <button class="control-btn primary-btn" id="check-btn">Проверить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Пути к JSON-файлам с кандзи
+        const kanjiFiles = {
+            n5: 'kanji_N5.json',
+            n4: 'kanji_N4.json',
+            n3: 'kanji_N3.json',
+            n2: 'kanji_N2.json',
+            n1: 'kanji_N1.json'
+        };
+
+        // Данные кандзи по уровням JLPT
+        let kanjiData = {
+            n5: [],
+            n4: [],
+            n3: [],
+            n2: [],
+            n1: []
+        };
+
+        // Текущее состояние
+        let currentState = {
+            practiceMode: 'reading',
+            selectionMode: 'level',
+            selectedLevels: ['n5'],
+            currentKanji: null,
+            correctAnswers: 0,
+            wrongAnswers: 0,
+            streak: 0,
+            kanjiPool: []
+        };
+
+        // DOM элементы
+        const elements = {
+            kanjiCharacter: document.getElementById('kanji-character'),
+            kanjiTable: document.getElementById('kanji-table'),
+            currentKanjiTable: document.getElementById('current-kanji-table'),
+            answerInput: document.getElementById('answer-input'),
+            meaningInput: document.getElementById('meaning-input'),
+            readingMode: document.getElementById('reading-mode'),
+            meaningMode: document.getElementById('meaning-mode'),
+            characterMode: document.getElementById('character-mode'),
+            writingMode: document.getElementById('writing-mode'),
+            kanjiChoices: document.getElementById('kanji-choices'),
+            drawingCanvas: document.getElementById('drawing-canvas'),
+            clearDrawing: document.getElementById('clear-drawing'),
+            checkDrawing: document.getElementById('check-drawing'),
+            resultMessage: document.getElementById('result-message'),
+            messageText: document.getElementById('message-text'),
+            correctAnswer: document.getElementById('correct-answer'),
+            checkBtn: document.getElementById('check-btn'),
+            skipBtn: document.getElementById('skip-btn'),
+            showTableBtn: document.getElementById('show-table-btn'),
+            correctCount: document.getElementById('correct-count'),
+            wrongCount: document.getElementById('wrong-count'),
+            streakCount: document.getElementById('streak-count'),
+            modeOptions: document.querySelectorAll('.mode-option'),
+            selectionOptions: document.querySelectorAll('[name="symbol-selection"]'),
+            levelOptions: document.querySelectorAll('.jlpt-level'),
+            toggleTableBtn: document.getElementById('toggle-table-btn'),
+            pronunciationTable: document.getElementById('pronunciation-table'),
+            overlay: document.getElementById('overlay'),
+            kanjiTableBody: document.getElementById('kanji-table-body')
+        };
+
+        // Инициализация canvas для рисования
+        const canvas = elements.drawingCanvas;
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Установка размеров canvas
+        function setupCanvas() {
+            const container = canvas.parentElement;
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+            
+            const scale = window.devicePixelRatio || 1;
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            
+            ctx.scale(scale, scale);
+            
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+        }
+
+        // Обработчики событий для рисования
+        function startDrawing(e) {
+            isDrawing = true;
+            const pos = getMousePos(canvas, e);
+            [lastX, lastY] = [pos.x, pos.y];
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const pos = getMousePos(canvas, e);
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            [lastX, lastY] = [pos.x, pos.y];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function getMousePos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (evt.clientX || evt.touches[0].clientX) - rect.left,
+                y: (evt.clientY || evt.touches[0].clientY) - rect.top
+            };
+        }
+
+        elements.clearDrawing.addEventListener('click', () => {
+            const width = canvas.width / (window.devicePixelRatio || 1);
+            const height = canvas.height / (window.devicePixelRatio || 1);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+        });
+
+        // Загрузка данных кандзи из JSON-файлов
+        async function loadKanjiData() {
+            try {
+                const loadingPromises = Object.keys(kanjiFiles).map(async level => {
+                    const response = await fetch(kanjiFiles[level]);
+                    if (!response.ok) {
+                        throw new Error(`Не удалось загрузить файл ${kanjiFiles[level]}`);
+                    }
+                    const data = await response.json();
+                    
+                    // Преобразуем данные в нужный формат
+                    kanjiData[level] = data.map(item => ({
+                        character: item.kanji,
+                        onyomi: item.on || [],
+                        kunyomi: item.kun || [],
+                        meaning: item.meaning,
+                        strokeCount: item.strokes || 0
+                    }));
+                });
+                
+                await Promise.all(loadingPromises);
+                console.log('Все данные кандзи загружены');
+                
+                // После загрузки данных можно начать работу
+                generateNewKanji();
+                populateKanjiTable();
+            } catch (error) {
+                console.error('Ошибка при загрузке данных кандзи:', error);
+                alert('Произошла ошибка при загрузке данных. Пожалуйста, попробуйте позже.');
+            }
+        }
+
+        // Переключение таблицы кандзи
+        elements.toggleTableBtn.addEventListener('click', () => {
+            elements.pronunciationTable.classList.toggle('show');
+            elements.overlay.classList.toggle('show');
+        });
+
+        elements.overlay.addEventListener('click', () => {
+            elements.pronunciationTable.classList.remove('show');
+            elements.overlay.classList.remove('show');
+        });
+
+        // Инициализация при загрузке
+        window.addEventListener('DOMContentLoaded', () => {
+            setupCanvas();
+            initEventListeners();
+            loadKanjiData();
+            
+            // Загрузка данных пользователя
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0
+            };
+            
+            localStorage.setItem('nihongoMasterUser', JSON.stringify(userData));
+        });
+
+        window.addEventListener('resize', setupCanvas);
+
+        // Заполнение таблицы кандзи
+        function populateKanjiTable() {
+            elements.kanjiTableBody.innerHTML = '';
+            
+            let allKanji = [];
+            currentState.selectedLevels.forEach(level => {
+                if (kanjiData[level]) {
+                    allKanji = allKanji.concat(kanjiData[level]);
+                }
+            });
+            
+            allKanji.forEach(kanji => {
+                const row = document.createElement('tr');
+                
+                const charCell = document.createElement('td');
+                charCell.textContent = kanji.character;
+                row.appendChild(charCell);
+                
+                const onyomiCell = document.createElement('td');
+                onyomiCell.textContent = kanji.onyomi.join(', ');
+                row.appendChild(onyomiCell);
+                
+                const meaningCell = document.createElement('td');
+                meaningCell.textContent = kanji.meaning;
+                row.appendChild(meaningCell);
+                
+                const strokesCell = document.createElement('td');
+                strokesCell.textContent = kanji.strokeCount;
+                row.appendChild(strokesCell);
+                
+                elements.kanjiTableBody.appendChild(row);
+            });
+        }
+
+        function initEventListeners() {
+            // Выбор режима тренировки
+            document.querySelectorAll('[name="practice-mode"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    document.querySelectorAll('.mode-option').forEach(option => {
+                        option.classList.remove('active');
+                    });
+                    
+                    e.target.closest('.mode-option').classList.add('active');
+                    
+                    currentState.practiceMode = e.target.closest('.mode-option').dataset.mode;
+                    updatePracticeMode();
+                });
+            });
+
+            // Выбор режима выбора символов
+            document.querySelectorAll('[name="symbol-selection"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    document.querySelectorAll('.mode-option').forEach(option => {
+                        option.classList.remove('active');
+                    });
+                    
+                    e.target.closest('.mode-option').classList.add('active');
+                    
+                    currentState.selectionMode = e.target.closest('.mode-option').dataset.selection;
+                    generateNewKanji();
+                    populateKanjiTable();
+                });
+            });
+
+            // Выбор уровня JLPT
+            elements.levelOptions.forEach(level => {
+                level.addEventListener('click', () => {
+                    const levelId = level.dataset.level;
+                    
+                    if (currentState.selectionMode === 'level') {
+                        if (level.classList.contains('active')) {
+                            level.classList.remove('active');
+                            currentState.selectedLevels = currentState.selectedLevels.filter(l => l !== levelId);
+                        } else {
+                            level.classList.add('active');
+                            if (!currentState.selectedLevels.includes(levelId)) {
+                                currentState.selectedLevels.push(levelId);
+                            }
+                        }
+                        
+                        if (currentState.selectedLevels.length === 0) {
+                            level.classList.add('active');
+                            currentState.selectedLevels.push(levelId);
+                        }
+                        
+                        generateNewKanji();
+                        populateKanjiTable();
+                    }
+                });
+            });
+
+            // Кнопки управления
+            elements.checkBtn.addEventListener('click', checkAnswer);
+            elements.skipBtn.addEventListener('click', generateNewKanji);
+            elements.showTableBtn.addEventListener('click', toggleKanjiTable);
+
+            elements.answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+
+            elements.meaningInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+
+            elements.kanjiChoices.addEventListener('click', (e) => {
+                if (e.target.classList.contains('answer-option')) {
+                    const userAnswer = e.target.dataset.kanji;
+                    checkAnswer(userAnswer);
+                }
+            });
+
+            elements.checkDrawing.addEventListener('click', () => {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const hasDrawing = !imageData.data.every((val, index) => {
+                    return index % 4 === 3 || val === 255;
+                });
+                
+                if (hasDrawing) {
+                    showResult(true);
+                    setTimeout(generateNewKanji, 1500);
+                } else {
+                    alert('Пожалуйста, нарисуйте кандзи перед проверкой');
+                }
+            });
+
+            // Обработчики событий для canvas
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+            
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+            
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+        }
+
+        function toggleKanjiTable() {
+            if (elements.kanjiTable.style.display === 'block') {
+                elements.kanjiTable.style.display = 'none';
+                elements.showTableBtn.textContent = 'Показать таблицу';
+            } else {
+                showKanjiInfo();
+                elements.kanjiTable.style.display = 'block';
+                elements.showTableBtn.textContent = 'Скрыть таблицу';
+            }
+        }
+
+        function updatePracticeMode() {
+            elements.readingMode.style.display = 'none';
+            elements.meaningMode.style.display = 'none';
+            elements.characterMode.style.display = 'none';
+            elements.writingMode.style.display = 'none';
+            elements.kanjiTable.style.display = 'none';
+            elements.showTableBtn.textContent = 'Показать таблицу';
+            elements.checkBtn.style.display = 'block';
+
+            switch (currentState.practiceMode) {
+                case 'reading':
+                    elements.readingMode.style.display = 'block';
+                    elements.checkBtn.textContent = 'Проверить';
+                    break;
+                case 'meaning':
+                    elements.meaningMode.style.display = 'block';
+                    elements.checkBtn.textContent = 'Проверить';
+                    break;
+                case 'character':
+                    elements.characterMode.style.display = 'block';
+                    elements.checkBtn.style.display = 'none';
+                    break;
+                case 'writing':
+                    elements.writingMode.style.display = 'block';
+                    elements.checkBtn.style.display = 'none';
+                    break;
+            }
+
+            generateNewKanji();
+        }
+
+        function showKanjiInfo() {
+            if (!currentState.currentKanji) return;
+            
+            elements.currentKanjiTable.innerHTML = '';
+            
+            const row = document.createElement('tr');
+            
+            const charCell = document.createElement('td');
+            charCell.textContent = currentState.currentKanji.character;
+            row.appendChild(charCell);
+            
+            const onyomiCell = document.createElement('td');
+            onyomiCell.textContent = currentState.currentKanji.onyomi.join(', ');
+            row.appendChild(onyomiCell);
+            
+            const meaningCell = document.createElement('td');
+            meaningCell.textContent = currentState.currentKanji.meaning;
+            row.appendChild(meaningCell);
+            
+            const strokesCell = document.createElement('td');
+            strokesCell.textContent = currentState.currentKanji.strokeCount;
+            row.appendChild(strokesCell);
+            
+            elements.currentKanjiTable.appendChild(row);
+        }
+
+        function generateNewKanji() {
+            elements.resultMessage.classList.remove('success', 'error');
+            elements.resultMessage.style.display = 'none';
+            elements.answerInput.value = '';
+            elements.meaningInput.value = '';
+            elements.kanjiTable.style.display = 'none';
+            elements.showTableBtn.textContent = 'Показать таблицу';
+            
+            const width = canvas.width / (window.devicePixelRatio || 1);
+            const height = canvas.height / (window.devicePixelRatio || 1);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+
+            let kanjiList = [];
+            
+            if (currentState.selectionMode === 'level') {
+                currentState.selectedLevels.forEach(level => {
+                    if (kanjiData[level]) {
+                        kanjiList = kanjiList.concat(kanjiData[level]);
+                    }
+                });
+            } else if (currentState.selectionMode === 'random') {
+                for (const level in kanjiData) {
+                    kanjiList = kanjiList.concat(kanjiData[level]);
+                }
+            }
+
+            if (kanjiList.length > 0) {
+                const randomIndex = Math.floor(Math.random() * kanjiList.length);
+                currentState.currentKanji = kanjiList[randomIndex];
+                displayKanji();
+            }
+        }
+
+        function displayKanji() {
+            if (!currentState.currentKanji) return;
+
+            elements.kanjiCharacter.textContent = currentState.currentKanji.character;
+            
+            if (currentState.practiceMode === 'character') {
+                const correctKanji = currentState.currentKanji.character;
+                let allKanji = [];
+                
+                currentState.selectedLevels.forEach(level => {
+                    if (kanjiData[level]) {
+                        kanjiData[level].forEach(kanji => {
+                            if (!allKanji.includes(kanji.character)) {
+                                allKanji.push(kanji.character);
+                            }
+                        });
+                    }
+                });
+                
+                let kanjiChoices = [correctKanji];
+                while (kanjiChoices.length < 4) {
+                    const randomKanji = allKanji[Math.floor(Math.random() * allKanji.length)];
+                    if (!kanjiChoices.includes(randomKanji)) {
+                        kanjiChoices.push(randomKanji);
+                    }
+                }
+                
+                kanjiChoices = shuffleArray(kanjiChoices);
+                
+                elements.kanjiChoices.innerHTML = '';
+                kanjiChoices.forEach(kanji => {
+                    const option = document.createElement('div');
+                    option.className = 'answer-option';
+                    option.dataset.kanji = kanji;
+                    option.textContent = kanji;
+                    elements.kanjiChoices.appendChild(option);
+                });
+            }
+        }
+
+        function checkAnswer(userAnswer = null) {
+            if (!currentState.currentKanji) return;
+
+            let isCorrect = false;
+            
+            if (currentState.practiceMode === 'reading') {
+                const userInput = elements.answerInput.value.trim().toLowerCase();
+                const possibleReadings = [
+                    ...currentState.currentKanji.onyomi.map(r => r.toLowerCase()),
+                    ...currentState.currentKanji.kunyomi.map(r => r.replace(/[-].*/, '').toLowerCase())
+                ];
+                isCorrect = possibleReadings.includes(userInput);
+            } else if (currentState.practiceMode === 'meaning') {
+                const userInput = elements.meaningInput.value.trim().toLowerCase();
+                const possibleMeanings = currentState.currentKanji.meaning.split(', ').map(m => m.toLowerCase());
+                isCorrect = possibleMeanings.some(meaning => meaning.includes(userInput) || userInput.includes(meaning));
+            } else if (userAnswer) {
+                if (currentState.practiceMode === 'character') {
+                    isCorrect = userAnswer === currentState.currentKanji.character;
+                } else if (currentState.practiceMode === 'writing') {
+                    isCorrect = true;
+                }
+            }
+
+            showResult(isCorrect);
+            
+            if (isCorrect) {
+                addXP(20);
+                updateKanjiProgress();
+            }
+            
+            if (currentState.practiceMode !== 'writing') {
+                setTimeout(generateNewKanji, isCorrect ? 800 : 2000);
+            } else {
+                setTimeout(generateNewKanji, 1500);
+            }
+        }
+
+        function showResult(isCorrect) {
+            if (isCorrect) {
+                currentState.correctAnswers++;
+                currentState.streak++;
+                elements.resultMessage.className = 'result-message success';
+                elements.messageText.textContent = 'Правильно!';
+                elements.correctAnswer.textContent = '';
+            } else {
+                currentState.wrongAnswers++;
+                currentState.streak = 0;
+                elements.resultMessage.className = 'result-message error';
+                elements.messageText.textContent = 'Неправильно';
+                
+                if (currentState.practiceMode === 'reading') {
+                    const readings = [
+                        ...currentState.currentKanji.onyomi,
+                        ...currentState.currentKanji.kunyomi
+                    ];
+                    elements.correctAnswer.textContent = `Правильные чтения: ${readings.join(', ')}`;
+                } else if (currentState.practiceMode === 'meaning') {
+                    elements.correctAnswer.textContent = `Правильное значение: ${currentState.currentKanji.meaning}`;
+                } else if (currentState.practiceMode === 'character') {
+                    elements.correctAnswer.textContent = `Правильный кандзи: ${currentState.currentKanji.character}`;
+                }
+            }
+            
+            elements.resultMessage.style.display = 'block';
+            updateStats();
+        }
+
+        function updateStats() {
+            elements.correctCount.textContent = currentState.correctAnswers;
+            elements.wrongCount.textContent = currentState.wrongAnswers;
+            elements.streakCount.textContent = currentState.streak;
+        }
+
+        function addXP(amount) {
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0
+            };
+            
+            userData.xp += amount;
+            
+            if (userData.xp >= userData.nextLevelXp) {
+                userData.level++;
+                userData.xp = userData.xp - userData.nextLevelXp;
+                userData.nextLevelXp = Math.floor(userData.nextLevelXp * 1.2);
+                
+                alert(`Поздравляем! Вы достигли уровня ${userData.level}`);
+            }
+            
+            localStorage.setItem('nihongoMasterUser', JSON.stringify(userData));
+        }
+
+        function updateKanjiProgress() {
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0
+            };
+            
+            userData.kanjiLearned++;
+            
+            localStorage.setItem('nihongoMasterUser', JSON.stringify(userData));
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+    </script>
+</body>
+</html>
