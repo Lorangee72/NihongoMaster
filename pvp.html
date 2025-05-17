@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PvP Режим | Nihongo Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #f1c40f;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: white;
+        }
+        
+        .back-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .pvp-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .page-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+        
+        .pvp-modes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .pvp-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .pvp-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .pvp-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .pvp-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+        }
+        
+        .pvp-title {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.8rem;
+            z-index: 2;
+        }
+        
+        .pvp-content {
+            padding: 20px;
+        }
+        
+        .pvp-description {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .pvp-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .pvp-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .leaderboard {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-top: 50px;
+        }
+        
+        .leaderboard-title {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--light);
+            font-weight: 700;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .rank {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .user-you {
+            background-color: rgba(241, 196, 15, 0.2);
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .pvp-modes {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="menu.html" class="logo">Nihongo<span>Master</span></a>
+            <a href="menu.html" class="back-btn">На главную</a>
+        </div>
+    </div>
+    
+    <div class="pvp-container">
+        <h1 class="page-title">⚔️ PvP Режимы</h1>
+        <p class="page-description">Соревнуйтесь с другими игроками в знании японского языка. Выбирайте режим по своему уровню и бросайте вызов соперникам!</p>
+        
+        <div class="pvp-modes">
+            <!-- Режим 1 -->
+            <div class="pvp-card">
+                <div class="pvp-image" style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-1.2.1&auto=format&fit=crop&w=1351&q=80');">
+                    <h3 class="pvp-title">Дуэль кандзи</h3>
+                </div>
+                <div class="pvp-content">
+                    <p class="pvp-description">
+                        Соревнуйтесь 1 на 1 в знании кандзи. Чем сложнее уровень JLPT, тем больше очков вы получаете за правильный ответ.
+                        Рейтинговая система ELO определяет ваше место в таблице лидеров.
+                    </p>
+                    <a href="kanji-duel.html" class="pvp-btn">Начать дуэль</a>
+                </div>
+            </div>
+            
+            <!-- Режим 2 -->
+            <div class="pvp-card">
+                <div class="pvp-image" style="background-image: url('https://images.unsplash.com/photo-1553481187-be93c21490a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="pvp-title">Скоростной поезд</h3>
+                </div>
+                <div class="pvp-content">
+                    <p class="pvp-description">
+                        До 4 игроков одновременно соревнуются в скорости ответов на вопросы по лексике.
+                        Чем быстрее вы отвечаете, тем больше очков получаете. Ошибка - минус баллы!
+                    </p>
+                    <a href="speed-train.html" class="pvp-btn">Присоединиться</a>
+                </div>
+            </div>
+            
+            <!-- Режим 3 -->
+            <div class="pvp-card">
+                <div class="pvp-image" style="background-image: url('https://images.unsplash.com/photo-1518655048521-f130df041f66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    <h3 class="pvp-title">Командный бой</h3>
+                </div>
+                <div class="pvp-content">
+                    <p class="pvp-description">
+                        2 команды по 3 игрока соревнуются в знании грамматики. Правильные ответы продвигают вашу команду вперед.
+                        Побеждает команда, первой достигшая финиша!
+                    </p>
+                    <a href="team-battle.html" class="pvp-btn">Создать команду</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="leaderboard">
+            <h2 class="leaderboard-title">🏆 Таблица лидеров</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ранг</th>
+                        <th>Игрок</th>
+                        <th>Рейтинг</th>
+                        <th>Победы</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- Данные будут заполнены JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Загрузка данных таблицы лидеров
+        document.addEventListener('DOMContentLoaded', function() {
+            // В реальном приложении здесь будет запрос к серверу
+            const leaderboardData = [
+                { rank: 1, name: "Самурай2000", rating: 2450, wins: 124, isYou: false },
+                { rank: 2, name: "Хитомо", rating: 2310, wins: 98, isYou: false },
+                { rank: 3, name: "Котобусё", rating: 2250, wins: 87, isYou: true },
+                { rank: 4, name: "Анимешник", rating: 2105, wins: 76, isYou: false },
+                { rank: 5, name: "Вакарин", rating: 1980, wins: 65, isYou: false },
+                { rank: 6, name: "Токио_Дрифт", rating: 1850, wins: 54, isYou: false },
+                { rank: 7, name: "Сакура_Блоссом", rating: 1720, wins: 43, isYou: false },
+                { rank: 8, name: "Нихонго_Про", rating: 1650, wins: 39, isYou: false },
+                { rank: 9, name: "Гайдзин_Сан", rating: 1580, wins: 35, isYou: false },
+                { rank: 10, name: "Банзай", rating: 1500, wins: 30, isYou: false }
+            ];
+            
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            
+            leaderboardData.forEach(player => {
+                const row = document.createElement('tr');
+                if (player.isYou) row.classList.add('user-you');
+                
+                row.innerHTML = `
+                    <td class="rank">${player.rank}</td>
+                    <td>${player.name} ${player.isYou ? '(Вы)' : ''}</td>
+                    <td>${player.rating}</td>
+                    <td>${player.wins}</td>
+                `;
+                
+                leaderboardBody.appendChild(row);
+            });
+            
+            // Загрузка данных пользователя
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0,
+                pvpRating: 1500,
+                pvpWins: 0,
+                pvpLosses: 0
+            };
+            
+            localStorage.setItem('nihongoMasterUser', JSON.stringify(userData));
+        });
+    </script>
+</body>
+</html>

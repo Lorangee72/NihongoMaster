@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дуэль кандзи | Nihongo Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #f1c40f;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: white;
+        }
+        
+        .back-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .duel-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 20px;
+        }
+        
+        .duel-title {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .duel-status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .player {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .player-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .player-rating {
+            color: #777;
+            margin-bottom: 10px;
+        }
+        
+        .player-score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .vs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            padding: 0 20px;
+        }
+        
+        .duel-timer {
+            background-color: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 auto;
+            width: fit-content;
+        }
+        
+        .duel-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .kanji-character {
+            font-size: 8rem;
+            margin: 30px 0;
+        }
+        
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .answer-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--light);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .answer-btn:hover {
+            background-color: #d6dbdf;
+        }
+        
+        .result-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+            display: block;
+        }
+        
+        .error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--error);
+            display: block;
+        }
+        
+        .duel-chat {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chat-messages {
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .chat-input button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .waiting-screen {
+            text-align: center;
+            padding: 50px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .duel-status {
+                flex-direction: column;
+            }
+            
+            .vs {
+                padding: 20px 0;
+            }
+            
+            .answers {
+                grid-template-columns: 1fr;
+            }
+            
+            .kanji-character {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="menu.html" class="logo">Nihongo<span>Master</span></a>
+            <a href="pvp.html" class="back-btn">Назад к PvP</a>
+        </div>
+    </div>
+    
+    <div class="duel-container">
+        <h1 class="duel-title">⚔️ Дуэль кандзи</h1>
+        
+        <div id="waitingScreen" class="waiting-screen">
+            <h2>Поиск соперника...</h2>
+            <div class="spinner"></div>
+            <p>Ваш рейтинг: <span id="userRating">1500</span></p>
+            <button id="cancelBtn" class="back-btn">Отменить поиск</button>
+        </div>
+        
+        <div id="duelScreen" style="display: none;">
+            <div class="duel-status">
+                <div class="player">
+                    <div class="player-name" id="player1Name">Вы</div>
+                    <div class="player-rating" id="player1Rating">Рейтинг: 1500</div>
+                    <div class="player-score" id="player1Score">0</div>
+                </div>
+                <div class="vs">VS</div>
+                <div class="player">
+                    <div class="player-name" id="player2Name">Соперник</div>
+                    <div class="player-rating" id="player2Rating">Рейтинг: 1500</div>
+                    <div class="player-score" id="player2Score">0</div>
+                </div>
+            </div>
+            
+            <div class="duel-timer" id="duelTimer">10</div>
+            
+            <div class="duel-area">
+                <div class="kanji-character" id="kanjiCharacter">漢</div>
+                
+                <div class="answers" id="answers">
+                    <!-- Варианты ответов будут добавлены через JavaScript -->
+                </div>
+                
+                <div class="result-message" id="resultMessage">
+                    <div id="messageText"></div>
+                </div>
+            </div>
+            
+            <div class="duel-chat">
+                <h3>Чат дуэли</h3>
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Сообщения чата будут добавлены через JavaScript -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Написать сообщение...">
+                    <button id="sendBtn">Отправить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные кандзи по уровням JLPT
+        const kanjiData = {
+            n5: [
+                { character: "日", meaning: "солнце, день", onyomi: ["にち", "じつ"], kunyomi: ["ひ", "か"] },
+                { character: "月", meaning: "луна, месяц", onyomi: ["げつ", "がつ"], kunyomi: ["つき"] },
+                { character: "火", meaning: "огонь", onyomi: ["か"], kunyomi: ["ひ", "ほ"] },
+                { character: "水", meaning: "вода", onyomi: ["すい"], kunyomi: ["みず"] },
+                { character: "木", meaning: "дерево", onyomi: ["もく", "ぼく"], kunyomi: ["き", "こ"] }
+            ],
+            n4: [
+                { character: "電", meaning: "электричество", onyomi: ["でん"], kunyomi: [] },
+                { character: "車", meaning: "машина", onyomi: ["しゃ"], kunyomi: ["くるま"] },
+                { character: "語", meaning: "язык, слово", onyomi: ["ご"], kunyomi: ["かた"] },
+                { character: "社", meaning: "компания, общество", onyomi: ["しゃ"], kunyomi: ["やしろ"] },
+                { character: "店", meaning: "магазин", onyomi: ["てん"], kunyomi: ["みせ"] }
+            ],
+            n3: [
+                { character: "館", meaning: "здание, учреждение", onyomi: ["かん"], kunyomi: [] },
+                { character: "験", meaning: "экзамен, тест", onyomi: ["けん"], kunyomi: [] },
+                { character: "議", meaning: "обсуждение, совет", onyomi: ["ぎ"], kunyomi: [] },
+                { character: "働", meaning: "работать", onyomi: ["どう"], kunyomi: ["はたら"] },
+                { character: "築", meaning: "строить", onyomi: ["ちく"], kunyomi: ["きず"] }
+            ],
+            n2: [
+                { character: "懸", meaning: "подвешивать, зависеть", onyomi: ["けん"], kunyomi: ["か"] },
+                { character: "濯", meaning: "стирать, полоскать", onyomi: ["たく"], kunyomi: [] },
+                { character: "療", meaning: "лечить", onyomi: ["りょう"], kunyomi: [] },
+                { character: "穫", meaning: "урожай", onyomi: ["かく"], kunyomi: [] },
+                { character: "寮", meaning: "общежитие", onyomi: ["りょう"], kunyomi: [] }
+            ],
+            n1: [
+                { character: "鬱", meaning: "депрессия, уныние", onyomi: ["うつ"], kunyomi: [] },
+                { character: "籠", meaning: "корзина, клетка", onyomi: ["ろう"], kunyomi: ["かご"] },
+                { character: "躊", meaning: "колебаться", onyomi: ["ちゅう"], kunyomi: [] },
+                { character: "躾", meaning: "воспитание", onyomi: [], kunyomi: ["しつ"] },
+                { character: "饗", meaning: "угощать", onyomi: ["きょう"], kunyomi: [] }
+            ]
+        };
+        
+        // Игровые переменные
+        let duelActive = false;
+        let timer = 10;
+        let timerInterval;
+        let currentQuestion;
+        let playerScore = 0;
+        let opponentScore = 0;
+        let playerRating = 1500;
+        let opponentRating = 1500;
+        
+        // Элементы DOM
+        const waitingScreen = document.getElementById('waitingScreen');
+        const duelScreen = document.getElementById('duelScreen');
+        const userRatingSpan = document.getElementById('userRating');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const player1Name = document.getElementById('player1Name');
+        const player1Rating = document.getElementById('player1Rating');
+        const player1Score = document.getElementById('player1Score');
+        const player2Name = document.getElementById('player2Name');
+        const player2Rating = document.getElementById('player2Rating');
+        const player2Score = document.getElementById('player2Score');
+        const duelTimer = document.getElementById('duelTimer');
+        const kanjiCharacter = document.getElementById('kanjiCharacter');
+        const answersContainer = document.getElementById('answers');
+        const resultMessage = document.getElementById('resultMessage');
+        const messageText = document.getElementById('messageText');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        // Загрузка данных пользователя
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0,
+                pvpRating: 1500,
+                pvpWins: 0,
+                pvpLosses: 0
+            };
+            
+            playerRating = userData.pvpRating;
+            userRatingSpan.textContent = playerRating;
+            
+            // В реальном приложении здесь будет подключение к серверу для поиска соперника
+            // Для демонстрации автоматически находим "соперника" через 3 секунды
+            setTimeout(startDuel, 3000);
+        });
+        
+        // Начало дуэли
+        function startDuel() {
+            waitingScreen.style.display = 'none';
+            duelScreen.style.display = 'block';
+            duelActive = true;
+            
+            // Установка данных игроков
+            player1Name.textContent = "Вы";
+            player1Rating.textContent = `Рейтинг: ${playerRating}`;
+            player1Score.textContent = "0";
+            
+            // Генерация случайного соперника (в реальном приложении это будет реальный игрок)
+            opponentRating = playerRating + Math.floor(Math.random() * 200) - 100;
+            player2Name.textContent = "Самурай" + Math.floor(Math.random() * 1000);
+            player2Rating.textContent = `Рейтинг: ${opponentRating}`;
+            player2Score.textContent = "0";
+            
+            startRound();
+        }
+        
+        // Начало раунда
+        function startRound() {
+            // Сброс таймера
+            timer = 10;
+            duelTimer.textContent = timer;
+            
+            // Очистка предыдущих результатов
+            resultMessage.style.display = 'none';
+            
+            // Генерация случайного уровня сложности (чем выше рейтинг, тем сложнее кандзи)
+            let level;
+            const avgRating = (playerRating + opponentRating) / 2;
+            
+            if (avgRating < 1200) level = "n5";
+            else if (avgRating < 1500) level = "n4";
+            else if (avgRating < 1800) level = "n3";
+            else if (avgRating < 2100) level = "n2";
+            else level = "n1";
+            
+            // Выбор случайного кандзи
+            const kanjiList = kanjiData[level];
+            currentQuestion = kanjiList[Math.floor(Math.random() * kanjiList.length)];
+            kanjiCharacter.textContent = currentQuestion.character;
+            
+            // Генерация вариантов ответов
+            const correctAnswer = currentQuestion.meaning;
+            let answers = [correctAnswer];
+            
+            // Добавление случайных неправильных ответов
+            while (answers.length < 4) {
+                const randomKanji = kanjiList[Math.floor(Math.random() * kanjiList.length)];
+                if (!answers.includes(randomKanji.meaning)) {
+                    answers.push(randomKanji.meaning);
+                }
+            }
+            
+            // Перемешивание ответов
+            answers = shuffleArray(answers);
+            
+            // Отображение вариантов ответов
+            answersContainer.innerHTML = '';
+            answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.className = 'answer-btn';
+                button.textContent = answer;
+                button.addEventListener('click', () => checkAnswer(answer === correctAnswer));
+                answersContainer.appendChild(button);
+            });
+            
+            // Запуск таймера
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+        
+        // Обновление таймера
+        function updateTimer() {
+            timer--;
+            duelTimer.textContent = timer;
+            
+            if (timer <= 0) {
+                clearInterval(timerInterval);
+                showResult(false);
+                setTimeout(startRound, 2000);
+            }
+        }
+        
+        // Проверка ответа
+        function checkAnswer(isCorrect) {
+            clearInterval(timerInterval);
+            
+            if (isCorrect) {
+                playerScore++;
+                player1Score.textContent = playerScore;
+                showResult(true);
+                
+                // Обновление рейтинга (упрощенная система ELO)
+                const expectedScore = 1 / (1 + Math.pow(10, (opponentRating - playerRating) / 400));
+                playerRating = Math.round(playerRating + 32 * (1 - expectedScore));
+                player1Rating.textContent = `Рейтинг: ${playerRating}`;
+            } else {
+                showResult(false);
+                
+                // Обновление рейтинга (упрощенная система ELO)
+                const expectedScore = 1 / (1 + Math.pow(10, (opponentRating - playerRating) / 400));
+                playerRating = Math.round(playerRating + 32 * (0 - expectedScore));
+                player1Rating.textContent = `Рейтинг: ${playerRating}`;
+            }
+            
+            // Проверка окончания дуэли (первый набравший 5 очков)
+            if (playerScore >= 5 || opponentScore >= 5) {
+                endDuel();
+            } else {
+                setTimeout(startRound, 2000);
+            }
+        }
+        
+        // Показ результата
+        function showResult(isCorrect) {
+            if (isCorrect) {
+                resultMessage.className = 'result-message success';
+                messageText.textContent = 'Правильно! +1 очко';
+            } else {
+                resultMessage.className = 'result-message error';
+                messageText.textContent = `Неправильно! Правильный ответ: ${currentQuestion.meaning}`;
+                
+                // Соперник получает очко (в реальном приложении это будет ответ другого игрока)
+                opponentScore++;
+                player2Score.textContent = opponentScore;
+            }
+            
+            resultMessage.style.display = 'block';
+        }
+        
+        // Окончание дуэли
+        function endDuel() {
+            duelActive = false;
+            
+            // Обновление статистики пользователя
+            const userData = JSON.parse(localStorage.getItem('nihongoMasterUser')) || {
+                level: 1,
+                xp: 0,
+                nextLevelXp: 1000,
+                hiraganaProgress: 0,
+                katakanaProgress: 0,
+                kanjiLearned: 0,
+                streakDays: 0,
+                pvpRating: 1500,
+                pvpWins: 0,
+                pvpLosses: 0
+            };
+            
+            userData.pvpRating = playerRating;
+            if (playerScore > opponentScore) {
+                userData.pvpWins++;
+            } else {
+                userData.pvpLosses++;
+            }
+            
+            localStorage.setItem('nihongoMasterUser', JSON.stringify(userData));
+            
+            // Показ результата
+            if (playerScore > opponentScore) {
+                messageText.textContent = `Победа! Ваш новый рейтинг: ${playerRating}`;
+                resultMessage.className = 'result-message success';
+            } else {
+                messageText.textContent = `Поражение. Ваш новый рейтинг: ${playerRating}`;
+                resultMessage.className = 'result-message error';
+            }
+            
+            resultMessage.style.display = 'block';
+            
+            // Кнопка возврата
+            const backBtn = document.createElement('button');
+            backBtn.className = 'back-btn';
+            backBtn.textContent = 'Вернуться в PvP';
+            backBtn.style.marginTop = '20px';
+            backBtn.addEventListener('click', () => {
+                window.location.href = 'pvp.html';
+            });
+            
+            resultMessage.appendChild(backBtn);
+        }
+        
+        // Отмена поиска
+        cancelBtn.addEventListener('click', () => {
+            window.location.href = 'pvp.html';
+        });
+        
+        // Чат
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessage("Вы", message);
+                chatInput.value = '';
+                
+                // В реальном приложении сообщение будет отправлено сопернику
+                // Для демонстрации - автоматический ответ
+                setTimeout(() => {
+                    const responses = [
+                        "Хороший вопрос!",
+                        "Я тоже так думаю",
+                        "Не согласен",
+                        "Давай сосредоточимся на дуэли",
+                        "Удачи!"
+                    ];
+                    addMessage(player2Name.textContent, responses[Math.floor(Math.random() * responses.length)]);
+                }, 1000);
+            }
+        }
+        
+        function addMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Вспомогательные функции
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+    </script>
+</body>
+</html>
